@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <button data-open=".modal1">1</button>
+    <button data-open=".modal2">2</button>
+
+    <div class="modal modal1">
+      <h2>Modal 1</h2>
+      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Non reiciendis sed doloremque est animi! Cumque beatae ut voluptatibus ducimus hic minima accusamus explicabo repellendus officiis rerum ullam, molestias eos enim?</p>
+    </div>
+
+    <div class="modal modal2">
+      <h2>Modal 1</h2>
+      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Non reiciendis sed doloremque est animi! Cumque beatae ut voluptatibus ducimus hic minima accusamus explicabo repellendus officiis rerum ullam, molestias eos enim?</p>
+    </div>
+
+    <script src="../lib/modal.js"></script>
+    <script>
+      function handleEvent( e ){
+        var el = e.target,
+            selector = e.target.dataset.open;
+
+        if( !el.modal ){
+          el.modal = new Modal({
+            opener: el,
+            dom: document.querySelector( selector ),
+            tagName: 'section',
+            className: 'modal-wrapper',
+            onClose: function(){
+              console.log( 'close', arguments );
+              document.body.removeChild( el.modal.el );
+            }
+          });
+        }
+
+        el.modal.show( document.body );
+
+      }
+      Array.prototype.forEach.call( document.querySelectorAll( '[data-open]' ), function( el ){
+        el.addEventListener( 'click', handleEvent );
+      } );
+    </script>
+  </body>
+</html>
