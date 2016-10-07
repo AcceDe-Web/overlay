@@ -4,41 +4,177 @@
     <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
-    <button data-open=".modal1">1</button>
-    <button data-open=".modal2">2</button>
+    <div class="site-wrapper">
+      <button data-open=".modal1">1</button>
+      <button data-open=".modal2">2</button>
+      <button tabindex="-2">tabindex=-2</button>
+      <button tabindex=" -1">tabindex= -1</button>
+      <button data-open=".modal3">dialog modal</button>
 
-    <div class="modal modal1">
-      <h2>Modal 1</h2>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Non reiciendis sed doloremque est animi! Cumque beatae ut voluptatibus ducimus hic minima accusamus explicabo repellendus officiis rerum ullam, molestias eos enim?</p>
+      <div class="modal modal1">
+        <button class="close">Close</button>
+        <h2>Modal 1</h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Non reiciendis sed doloremque est animi! Cumque beatae ut voluptatibus ducimus hic minima accusamus explicabo repellendus officiis rerum ullam, molestias eos enim?</p>
+        <button>1</button>
+        <button>2</button>
+      </div>
+
+      <div class="modal modal2">
+        <h2>Modal 2</h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Non reiciendis sed doloremque est animi! Cumque beatae ut voluptatibus ducimus hic minima accusamus explicabo repellendus officiis rerum ullam, molestias eos enim?</p>
+        <form>
+          <fieldset>
+            <legend>Formulaire</legend>
+            <label>
+              <span>input 1</span>
+              <input/>
+            </label>
+            <label>
+              <span>input 2</span>
+              <input/>
+            </label>
+            <label>
+              <span>input 3</span>
+              <input/>
+            </label>
+          </fieldset>
+        </form>
+        <button>1</button>
+        <button>2</button>
+      </div>
     </div>
 
-    <div class="modal modal2">
-      <h2>Modal 1</h2>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Non reiciendis sed doloremque est animi! Cumque beatae ut voluptatibus ducimus hic minima accusamus explicabo repellendus officiis rerum ullam, molestias eos enim?</p>
-    </div>
+    <!-- <dialog class="modal3"> -->
+      <div class="modal modal3">
+        <button class="close">Close</button>
+        <h2>Modal 3</h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates alias consequatur iusto odit quod quia, maiores, accusantium pariatur, dolores accusamus rerum ad, dolorum atque earum. Itaque dolorum dolores consequuntur laboriosam.</p>
+        <button data-open="dialog.modal4">To modal 4 </button>
+        <input autofocus="" name="lastname" />
+      </div>
+    <!-- </dialog> -->
 
-    <script src="../lib/modal.js"></script>
+    <dialog class="modal4">
+      <div class="modal">
+        <button class="close">Close</button>
+        <h2>Modal 4</h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Non reiciendis sed doloremque est animi! Cumque beatae ut voluptatibus ducimus hic minima accusamus explicabo repellendus officiis rerum ullam, molestias eos enim?</p>
+        <form>
+          <fieldset>
+            <legend>Formulaire</legend>
+            <label>
+              <span>input 1</span>
+              <input/>
+            </label>
+            <label>
+              <span>input 2</span>
+              <input/>
+            </label>
+            <label>
+              <span>input 3</span>
+              <input/>
+            </label>
+          </fieldset>
+        </form>
+        <button>1</button>
+        <button>2</button>
+      </div>
+    </dialog>
+
+    <script src="/modal-o.js"></script>
     <script>
-      function handleEvent( e ){
-        var el = e.target,
-            selector = e.target.dataset.open;
+      /*function handleEvent( e ){
+        var btn = e.target,
+            selector = e.target.dataset.open,
+            modal = document.querySelector( selector );
 
-        if( !el.modal ){
-          el.modal = new Modal({
-            opener: el,
-            dom: document.querySelector( selector ),
+        var closeModal = function( currentModal ){
+          currentModal.removeEventListener( 'cancel', onclose );
+          currentModal.removeEventListener( 'click', onclick );
+
+          currentModal.classList.add( 'out' );
+
+          window.setTimeout( function(){
+            currentModal.close();
+          }, 300 );
+        }
+
+        var onclose = function( e ){
+          e.preventDefault();
+
+          closeModal( e.target );
+        }
+
+        if( modal.nodeName === 'DIALOG'  ){
+          console.log( modal ),
+
+          modal.classList.add( 'out' );
+
+          modal.showModal();
+
+          modal.addEventListener( 'cancel', onclose );
+
+          window.requestAnimationFrame( function(){
+            modal.classList.remove( 'out' );
+          } );
+          return;
+        }
+
+        if( !btn.modal ){
+          btn.modal = new window.Modal({
+            opener: btn,
+            dom: modal,
+          //html: string from ajax call
             tagName: 'section',
             className: 'modal-wrapper',
+            closeSelector: '.close',
             onClose: function(){
-              console.log( 'close', arguments );
-              document.body.removeChild( el.modal.el );
+              btn.modal.el.classList.add( 'out' );
+              window.setTimeout( function(){
+                document.body.removeChild( btn.modal.el );
+              }, 300 );
             }
           });
         }
 
-        el.modal.show( document.body );
+        btn.modal.el.style.display = 'none';
+        btn.modal.el.classList.add( 'out' );
 
+        btn.modal.el.style.display = '';
+        btn.modal.show( document.body );
+
+        window.requestAnimationFrame( function(){
+          btn.modal.el.classList.remove( 'out' );
+        } );
+
+      }*/
+
+      function handleEvent( e ){
+        var btn = e.target,
+            selector = e.target.dataset.open,
+            modal = document.querySelector( selector );
+
+        if( modal && 'DIALOG' === modal.nodeName ){
+          window.Modal.show( modal, {
+            opener: btn
+          } );
+        }
+        else if( !btn.modal ){
+          btn.modal = window.Modal.show( {
+            opener: btn,
+            dom: modal,
+          //html: string from ajax call
+            tagName: 'section',
+            className: 'modal-wrapper',
+            closeSelector: '.close',
+            role: selector.indexOf( 'modal3' ) !== -1 ? 'dialog': null
+          } );
+        }
+        else{
+          window.Modal.show( btn.modal );
+        }
       }
+
       Array.prototype.forEach.call( document.querySelectorAll( '[data-open]' ), function( el ){
         el.addEventListener( 'click', handleEvent );
       } );

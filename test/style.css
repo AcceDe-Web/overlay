@@ -12,13 +12,46 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: background 0.3s cubic-bezier( 0.250,  0.460, 0.450, 0.940 );
 }
 
-.modal-wrapper .modal{
+.modal-wrapper .modal,
+dialog .modal{
   display: block;
   background-color: #fff;
   width: 50%;
   max-width: 600px;
   min-width: 300px;
   padding: 20px;
+  transition-property: transform, opacity;
+  transition-timing-function: cubic-bezier( 0.250,  0.460, 0.450, 0.940 );
+  transition-duration: 0.3s;
+}
+
+.modal-wrapper.modal-hidden{
+  /*background-color: rgba( 0, 0, 0, 0 );*/
+  transition-timing-function: cubic-bezier( 0.550,  0.085, 0.680, 0.530 );
+}
+
+.modal-wrapper.modal-hidden .modal,
+dialog.modal-hidden .modal{
+  transform: translateY( 35% );
+  transition-timing-function: cubic-bezier( 0.550,  0.085, 0.680, 0.530 );
+  opacity: 0;
+}
+
+dialog{
+  display: none;
+  background: none;
+  border: 0;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  top: 0;
+}
+
+dialog[open]{
+  display: flex;
 }
