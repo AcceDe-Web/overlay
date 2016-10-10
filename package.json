@@ -36,7 +36,7 @@
     "browser-sync": "^2.17.0",
     "documentation": "^4.0.0-beta2",
     "faucet": "0.0.1",
-    "nightmare": "^2.3.3",
+    "nightmare": "^2.7.0",
     "tape": "^4.5.1",
     "uglify-js": "^2.7.3"
   }
