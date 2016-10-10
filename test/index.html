@@ -63,7 +63,7 @@
             <legend>Formulaire</legend>
             <label>
               <span>input 1</span>
-              <input/>
+              <input name="firstName" />
             </label>
             <label>
               <span>input 2</span>
@@ -87,12 +87,7 @@
             selector = e.target.getAttribute( 'data-open' ),
             modal = document.querySelector( selector );
 
-        if( modal && 'DIALOG' === modal.nodeName ){
-          window.Modal.show( modal, {
-            opener: btn
-          } );
-        }
-        else if( !btn.modal ){
+        if( !btn.modal ){
           btn.modal = window.Modal.show( {
             opener: btn,
             dom: modal,
