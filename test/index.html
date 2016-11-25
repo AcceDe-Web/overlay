@@ -5,11 +5,60 @@
   </head>
   <body>
     <div class="site-wrapper">
-      <button data-open=".modal1">1</button>
-      <button data-open=".modal2">2</button>
-      <button tabindex="-2">tabindex=-2</button>
-      <button tabindex=" -1">tabindex= -1</button>
-      <button data-open=".modal3" data-role="dialog">dialog modal</button>
+      <ul class="actions">
+        <li>
+          <button data-open=".modal1">Modale classique</button>
+        </li>
+        <li>
+          <button data-open=".modal2">Modale classique sans élément interactif</button>
+        </li>
+        <li>
+          <button data-open=".modal3">Modale sans bouton de fermeture</button>
+        </li>
+        <li>
+          <button tabindex="-2">Bouton avec tabindex négatif différent de -1</button>
+        </li>
+        <li>
+          <button tabindex=" -1">Bouton avec tabindex à -1</button>
+        </li>
+        <li>
+          <button data-open=".modal4" data-role="dialog">Modale avec un role dialog</button>
+        </li>
+        <li>
+          <button disabled>Bouton désactivé</button>
+        </li>
+      </ul>
+
+
+      <p contenteditable>Content editable paragraph</p>
+      <p>Non editable paragraph <a href="">with link</a></p>
+
+      <figure>
+        <img src="http://switch-company.com/medias/img/logo.png" usemap="#primary" />
+        <map name="primary" id="primary">
+          <area shape="circle" coords="94,66,27" href="another.html" />
+        </map>
+        <figcaption>Image map with href</figcaption>
+      </figure>
+
+      <p>Iframe</p>
+      <iframe src="http://switch-company.com"></iframe>
+
+      <form>
+        <fieldset>
+          <legend>Form with interactive and non interactive elements</legend>
+          <label for="text">Text</label>
+          <input id="text" type="text">
+          <label for="tabindex">negative tabindex</label>
+          <input id="tabindex" type="text" tabindex="-1">
+          <label for="textarea">Textarea</label>
+          <textarea id=textarea></textarea>
+          <label for="textarea">Disabled select</label>
+          <select id="select" disabled>
+            <option>1</option>
+          </select>
+        </fieldset>
+      </form>
 
       <div class="modal modal1">
         <button class="close">Close</button>
@@ -20,6 +69,12 @@
       </div>
 
       <div class="modal modal2">
+        <button class="close">Close</button>
+        <h2>Modal 1</h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Non reiciendis sed doloremque est animi! Cumque beatae ut voluptatibus ducimus hic minima accusamus explicabo repellendus officiis rerum ullam, molestias eos enim?</p>
+      </div>
+
+      <div class="modal modal3">
         <h2>Modal 2</h2>
         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Non reiciendis sed doloremque est animi! Cumque beatae ut voluptatibus ducimus hic minima accusamus explicabo repellendus officiis rerum ullam, molestias eos enim?</p>
         <form>
@@ -45,16 +100,16 @@
     </div>
 
     <!-- <dialog class="modal3"> -->
-      <div class="modal modal3">
+      <div class="modal modal4">
         <button class="close">Close</button>
         <h2 data-label>Modal 3</h2>
         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates alias consequatur iusto odit quod quia, maiores, accusantium pariatur, dolores accusamus rerum ad, dolorum atque earum. Itaque dolorum dolores consequuntur laboriosam.</p>
-        <button data-open=".modal4" data-role="dialog">To modal 4 </button>
+        <button data-open=".modal5" data-role="dialog">To modal 4 </button>
       </div>
     <!-- </dialog> -->
 
     <!-- <dialog class="modal4"> -->
-      <div class="modal modal4">
+      <div class="modal modal5">
         <button class="close">Close</button>
         <h2 data-label>Modal 4</h2>
         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Non reiciendis sed doloremque est animi! Cumque beatae ut voluptatibus ducimus hic minima accusamus explicabo repellendus officiis rerum ullam, molestias eos enim?</p>
