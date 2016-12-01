@@ -25,7 +25,13 @@
           <button data-open=".modal4" data-role="dialog">Modale avec un role dialog</button>
         </li>
         <li>
-          <button data-open=".modal6" data-role="dialog">Modale avec un role dialog sans élément interactif</button>
+          <button data-open=".modal6" data-role="dialog">Modale avec un role dialog, un titre et sans élément interactif</button>
+        </li>
+        <li>
+          <button data-open=".modal7" data-role="dialog" data-label="modalLabel">Modale avec un role dialog, sans titre et un label en paramètre</button>
+        </li>
+        <li>
+          <button data-open=".modal8" data-role="dialog">Modale avec un role dialog, sans titre et sans label en paramètre (erreur attendue)</button>
         </li>
         <li>
           <button disabled>Bouton désactivé</button>
@@ -146,6 +152,16 @@
       </div>
     <!-- </dialog> -->
 
+    <div class="modal modal7">
+      <button class="close">Close</button>
+      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates alias consequatur iusto odit quod quia, maiores, accusantium pariatur, dolores accusamus rerum ad, dolorum atque earum. Itaque dolorum dolores consequuntur laboriosam.</p>
+    </div>
+
+    <div class="modal modal8">
+      <button class="close">Close</button>
+      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates alias consequatur iusto odit quod quia, maiores, accusantium pariatur, dolores accusamus rerum ad, dolorum atque earum. Itaque dolorum dolores consequuntur laboriosam.</p>
+    </div>
+
     <script src="/modal.js"></script>
     <script>
       function handleEvent( e ){
@@ -161,7 +177,8 @@
             tagName: 'section',
             className: 'modal-wrapper',
             closeSelector: '.close',
-            role: btn.getAttribute( 'data-role' )
+            role: btn.getAttribute( 'data-role' ),
+            label: btn.getAttribute( 'data-label' )
           } );
         }
         else{

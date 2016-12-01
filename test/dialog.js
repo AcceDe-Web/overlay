@@ -365,6 +365,102 @@ test( '13| Après fermeture, le focus est placé sur l’élément interactif d�
     } );
 });
 
+// test 14
+test( '14| Le conteneur de la modale doit avoir la valeur « dialog » pour l’attribut « role ».', ( t ) => {
+  nightmare.refresh()
+    .click( '[data-open=".modal4"]' )
+    .wait( '.modal-wrapper' )
+    .evaluate(() => {
+      var modal = document.querySelector( '.modal-wrapper' );
+      return modal.getAttribute('role');
+    })
+    .then(( role ) => {
+      t.equal( role, 'dialog', '« role » doit valoir « dialog ».' );
+      t.end();
+    })
+    .catch( err => {
+      nightmare.end()
+      .then( () => {
+        t.fail( err );
+        t.end();
+      });
+    } );
+});
+
+// test 15
+test( '15| L’identifiant du titre de la modale doit être repris par l’attribut « aria-labelledby » du conteneur de celle-ci.', ( t ) => {
+  nightmare.refresh()
+    .click( '[data-open=".modal4"]' )
+    .wait( '.modal-wrapper' )
+    .evaluate(() => {
+      var modal = document.querySelector( '.modal-wrapper' ),
+          title = modal.querySelector( '[data-label]' );
+
+      return modal.getAttribute('aria-labelledby') === title.id;
+    })
+    .then(( labelMatch ) => {
+      t.equal( labelMatch, true, '« aria-labelledby » doit valoir la même valeur que l’identifiant du titre de la popin.' );
+      t.end();
+    })
+    .catch( err => {
+      nightmare.end()
+      .then( () => {
+        t.fail( err );
+        t.end();
+      });
+    } );
+});
+
+// test 16
+test( '16| Si le titre de la modale n’est pas affiché, le conteneur doit avoir un attribut « aria-label » non vide.', ( t ) => {
+  nightmare.refresh()
+    .click( '[data-open=".modal7"]' )
+    .wait( '.modal-wrapper' )
+    .evaluate(() => {
+      var modal = document.querySelector( '.modal-wrapper' ),
+          ariaLabel = modal.getAttribute( 'aria-label' );
+
+      return ariaLabel && ariaLabel.trim().length > 0;
+    })
+    .then(( ariaLabel ) => {
+      t.equal( ariaLabel, true, '« aria-label » doit être présent et non vide.' );
+      t.end();
+    })
+    .catch( err => {
+      nightmare.end()
+      .then( () => {
+        t.fail( err );
+        t.end();
+      });
+    } );
+});
+
+// test 17
+test( '17| Si le titre de la modale n’est pas affiché et qu’aucun « label » n’est passé, le script doit renvoyer une erreur.', ( t ) => {
+  nightmare.refresh()
+    .click( '[data-open=".modal8"]' )
+    .evaluate(() => {
+      var modal = document.querySelector( '.modal-wrapper' ),
+          hasModal;
+
+      hasModal = modal !== undefined ? true : false;
+
+      return hasModal;
+    })
+    .then(( hasModal ) => {
+      t.notEqual( hasModal, false, 'Le script doit renvoyer une erreur' );
+      t.end();
+    })
+    .catch( err => {
+      nightmare.end()
+      .then( () => {
+        t.fail( err );
+        t.end();
+      });
+    } );
+});
+
+
 test( '-------------------------------', ( t ) => {
   t.comment( 'Test suite done' );
   t.comment( '-------------------------------' );

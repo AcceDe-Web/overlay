@@ -106,3 +106,7 @@ dialog::backdrop{
 dialog[open]{
   display: flex;
 }
+
+.modal6 [data-label] {
+  display: none;
+}
