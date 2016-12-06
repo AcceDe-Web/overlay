@@ -471,33 +471,8 @@ test( '17| Si le titre de la modale n’est pas affiché et qu’aucun « label 
 });
 
 // test 18
-test( '18| La croix de fermeture est facultative', ( t ) => {
-  nightmare.refresh()
-    .click( '[data-open=".modal9"]' )
-    .evaluate(() => {
-      var modal = document.querySelector( '.modal-wrapper' ),
-          hasModal;
-
-      hasModal = modal !== undefined ? true : false;
-
-      return hasModal;
-    })
-    .then(( hasModal ) => {
-      t.equal( hasModal, true, 'La modale doit être présente.' );
-      t.end();
-    })
-    .catch( err => {
-      nightmare.end()
-      .then( () => {
-        t.fail( err );
-        t.end();
-      });
-    });
-});
-
-// test 19
 // Removed because Nightmare/Electron (Chromium?) does not seem to support JS triggered tabulation key
-// test( '19| A l’ouverture, `SHIFT + Tab` doit retourner sur le bouton de fermeture si un élément interactif est présent.', ( t ) => {
+// test( '18| A l’ouverture, `SHIFT + Tab` doit retourner sur le bouton de fermeture si un élément interactif est présent.', ( t ) => {
 //   nightmare.refresh()
 //     .click( '[data-open=".modal4"]' )
 //     .wait( '.modal-wrapper' )
