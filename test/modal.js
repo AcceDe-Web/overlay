@@ -176,7 +176,7 @@ test( '06| La touche « echap » permet de fermer la modale.', ( t ) => {
     } );
 });
 
-test( '07| Un click en dehors du contenu de la modale ferme la modale.', ( t ) => {
+test( '07| Un clic en dehors du contenu de la modale ferme la modale.', ( t ) => {
   nightmare.refresh()
     .click( '[data-open=".modal2"]' )
     .wait( '.modal-wrapper' )
@@ -227,7 +227,7 @@ test( '08| Un clic sur un bouton de fermeture ferme la modale.', ( t ) => {
 });
 
 
-test( '09| Un click dans le contenu de la modal ne ferme pas la modale.', ( t ) => {
+test( '09| Un clic dans le contenu de la modal ne ferme pas la modale.', ( t ) => {
   nightmare.refresh()
     .click( '[data-open=".modal2"]' )
     .wait( '.modal-wrapper' )
