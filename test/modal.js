@@ -22,7 +22,7 @@ test( '-------------------------------', ( t ) => {
 test( '01| Le conteneur de la modale doit avoir la valeur « false » pour l’attribut « aria-hidden ».', ( t ) => {
   nightmare.refresh()
     .click( '[data-open=".modal1"]' )
-    .wait( '.modal-wrapper' )
+    .wait( 50 )
     .evaluate(() => {
       var modal = document.querySelector( '.modal-wrapper' );
       return modal.getAttribute('aria-hidden');
@@ -43,7 +43,7 @@ test( '01| Le conteneur de la modale doit avoir la valeur « false » pour l�
 test( '02| Le focus clavier doit être positionné sur le premier élément interactif de la modale qui n’est pas un bouton de fermeture.', ( t ) => {
   nightmare.refresh()
     .click( '[data-open=".modal1"]' )
-    .wait( '.modal-wrapper' )
+    .wait( 50 )
     .evaluate(() => {
       var interactiveEl = document.querySelectorAll( '.modal-wrapper button' );
       // skip the first button which is the close button
@@ -65,7 +65,7 @@ test( '02| Le focus clavier doit être positionné sur le premier élément inte
 test( '03| Le focus clavier se positionne sur le premier bouton de fermeture s’il n’y a pas d’autre éléments interactifs.', ( t ) => {
   nightmare.refresh()
     .click( '[data-open=".modal2"]' )
-    .wait( '.modal-wrapper' )
+    .wait( 50 )
     .evaluate(() => {
       var interactiveEl = document.querySelector( '.modal-wrapper .close' );
       // skip the first button which is the close button
@@ -87,7 +87,7 @@ test( '03| Le focus clavier se positionne sur le premier bouton de fermeture s�
 test( '04| La totalité des éléments interactifs hors de la modale sont désactivés.', ( t ) => {
   nightmare.refresh()
     .click( '[data-open=".modal2"]' )
-    .wait( '.modal-wrapper' )
+    .wait( 50 )
     .evaluate( () => {
 
       let interactiveEls = Array.from( document.querySelectorAll( 'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, [tabindex], [contenteditable]' ) ),
@@ -121,7 +121,7 @@ test( '04| La totalité des éléments interactifs hors de la modale sont désac
 test( '05| La totalité de la page en arrière-plan n’est plus lisible.', ( t ) => {
   nightmare.refresh()
     .click( '[data-open=".modal2"]' )
-    .wait( '.modal-wrapper' )
+    .wait( 50 )
     .evaluate( () => {
 
       let bodyChildren = Array.from( document.body.children ),
@@ -154,14 +154,14 @@ test( '05| La totalité de la page en arrière-plan n’est plus lisible.', ( t 
 test( '06| La touche « echap » permet de fermer la modale.', ( t ) => {
   nightmare.refresh()
     .click( '[data-open=".modal2"]' )
-    .wait( '.modal-wrapper' )
+    .wait( 50 )
     .key( 27 )
     .wait( 500 )
     .evaluate( () => {
 
       let modal = document.querySelector( '.modal-wrapper' );
 
-      return !modal;
+      return modal.getAttribute('aria-hidden') === 'true';
     })
     .then( closed => {
       t.true( closed );
@@ -179,14 +179,14 @@ test( '06| La touche « echap » permet de fermer la modale.', ( t ) => {
 test( '07| Un clic en dehors du contenu de la modale ferme la modale.', ( t ) => {
   nightmare.refresh()
     .click( '[data-open=".modal2"]' )
-    .wait( '.modal-wrapper' )
+    .wait( 50 )
     .click( '.modal-wrapper' )
     .wait( 500 )
     .evaluate( () => {
 
       let modal = document.querySelector( '.modal-wrapper' );
 
-      return !modal;
+      return modal.getAttribute('aria-hidden') === 'true';
     })
     .then( closed => {
       t.true( closed );
@@ -204,14 +204,14 @@ test( '07| Un clic en dehors du contenu de la modale ferme la modale.', ( t ) =>
 test( '08| Un clic sur un bouton de fermeture ferme la modale.', ( t ) => {
   nightmare.refresh()
     .click( '[data-open=".modal2"]' )
-    .wait( '.modal-wrapper' )
+    .wait( 50 )
     .click( '.modal-wrapper .close' )
     .wait( 500 )
     .evaluate( () => {
 
       let modal = document.querySelector( '.modal-wrapper' );
 
-      return !modal;
+      return modal.getAttribute('aria-hidden') === 'true';
     })
     .then( closed => {
       t.true( closed );
@@ -230,14 +230,14 @@ test( '08| Un clic sur un bouton de fermeture ferme la modale.', ( t ) => {
 test( '09| Un clic dans le contenu de la modal ne ferme pas la modale.', ( t ) => {
   nightmare.refresh()
     .click( '[data-open=".modal2"]' )
-    .wait( '.modal-wrapper' )
+    .wait( 50 )
     .click( '.modal-wrapper .modal.modal2' )
     .wait( 500 )
     .evaluate( () => {
 
       let modal = document.querySelector( '.modal-wrapper' );
 
-      return !!modal;
+      return modal.getAttribute('aria-hidden') === 'false';
     })
     .then( opened => {
       t.true( opened );
@@ -256,29 +256,24 @@ test( '10| Après fermeture, la totalité des éléments interactifs hors de la 
   nightmare.refresh()
     .evaluate( () => {
 
-      let interactiveEls = Array.from( document.querySelectorAll( 'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, [tabindex], [contenteditable]' ) );
+      window.interactiveEls = Array.from( document.querySelectorAll( 'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, [tabindex], [contenteditable]' ) );
 
-      window.interactiveElsCount = interactiveEls.map( el => {
-        return !el.tabIndex;
-      } ).length;
+      window.interactiveEls.forEach( el => {
+        el.testIndex = el.tabIndex;
+      } );
 
     })
     .click( '[data-open=".modal2"]' )
-    .wait( '.modal-wrapper' )
+    .wait( 50 )
     .key( 27 )
     .wait( 500 )
     .evaluate( () => {
-
-      let interactiveEls = Array.from( document.querySelectorAll( 'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, [tabindex], [contenteditable]' ) );
-
-      let count = interactiveEls.map( el => {
-        return !el.tabIndex;
-      } ).length;
-      // nasty move to substract one from the count but the script remove the modal from the dom and so the interactive elements that are in it
-      return window.interactiveElsCount - 1 === count;
+      return window.interactiveEls.every( el => {
+        return el.testIndex === el.tabIndex;
+      } );
     })
-    .then( countMatch => {
-      t.true( countMatch );
+    .then( ok => {
+      t.true( ok );
       t.end();
     })
     .catch( err => {
@@ -293,7 +288,7 @@ test( '10| Après fermeture, la totalité des éléments interactifs hors de la 
 test( '11| Après fermeture, la totalité de la page en arrière-plan est lisible.', ( t ) => {
   nightmare.refresh()
     .click( '[data-open=".modal2"]' )
-    .wait( '.modal-wrapper' )
+    .wait( 50 )
     .key( 27 )
     .wait( 500 )
     .evaluate( () => {
@@ -301,8 +296,11 @@ test( '11| Après fermeture, la totalité de la page en arrière-plan est lisibl
       let bodyChildren = Array.from( document.body.children );
 
       return bodyChildren.every( el => {
-        return !el.hasAttribute( 'aria-hidden' ) || el.getAttribute( 'aria-hidden' ) === 'false';
-      } );
+        let isModal = el.classList.contains('modal-wrapper');
+        return ( isModal && el.getAttribute( 'aria-hidden' ) === 'true' )
+            || ( !isModal && !el.hasAttribute( 'aria-hidden' ))
+            || ( !isModal && el.getAttribute( 'aria-hidden' ) === 'false' );
+      });
     })
     .then( readable => {
       t.true( readable );
@@ -320,14 +318,15 @@ test( '11| Après fermeture, la totalité de la page en arrière-plan est lisibl
 test( '12| Après fermeture, la modale doit avoir la valeur « true » pour l’attribut « aria-hidden ».', ( t ) => {
   nightmare.refresh()
     .click( '[data-open=".modal2"]' )
-    .wait( '.modal-wrapper' )
+    .wait( 50 )
     .evaluate( () => {
       window.currentModal = document.querySelector( '.modal-wrapper' );
     } )
     .key( 27 )
     .wait( 500 )
     .evaluate( () => {
-      return window.currentModal.getAttribute( 'aria-hidden' ) === 'true';
+      const modalOpener = document.querySelector( '[data-open=".modal2"]' );
+      return modalOpener.modal.el.getAttribute( 'aria-hidden' ) === 'true';
     })
     .then( hidden => {
       t.true( hidden );
@@ -345,7 +344,7 @@ test( '12| Après fermeture, la modale doit avoir la valeur « true » pour l�
 test( '13| Après fermeture, le focus est placé sur l’élément interactif déclencheur de l’ouverture.', ( t ) => {
   nightmare.refresh()
     .click( '[data-open=".modal2"]' )
-    .wait( '.modal-wrapper' )
+    .wait( 50 )
     .key( 27 )
     .wait( 500 )
     .evaluate( () => {

@@ -22,7 +22,7 @@
           <button tabindex=" -1">Bouton avec tabindex à -1</button>
         </li>
         <li>
-          <button data-open=".modal4" data-role="dialog">Modale avec un role dialog</button>
+          <button class="test" data-open=".modal4" data-role="dialog">Modale avec un role dialog</button>
         </li>
         <li>
           <button data-open=".modal6" data-role="dialog">Modale avec un role dialog, un titre et sans élément interactif</button>
@@ -35,6 +35,9 @@
         </li>
         <li>
           <button data-open=".modal9" data-role="dialog">Modale avec un role dialog, sans bouton de fermeture</button>
+        </li>
+        <li>
+          <button data-open=".modal10" data-role="alertdialog">Modale avec un role alertdialog</button>
         </li>
         <li>
           <button disabled>Bouton désactivé</button>
@@ -170,15 +173,29 @@
       <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates alias consequatur iusto odit quod quia, maiores, accusantium pariatur, dolores accusamus rerum ad, dolorum atque earum. Itaque dolorum dolores consequuntur laboriosam.</p>
     </div>
 
+    <div class="modal modal10">
+      <h2 data-label>Modal 10</h2>
+      <p data-description>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates alias consequatur iusto odit quod quia, maiores, accusantium pariatur, dolores accusamus rerum ad, dolorum atque earum. Itaque dolorum dolores consequuntur laboriosam.</p>
+      <button class="close">Ok</button>
+    </div>
+
     <script src="/modal.js"></script>
     <script>
+      function transitionEnd( e ){
+        var modal = e.target.closest( '[aria-hidden]' )
+        if( e.propertyName === 'transform' ){
+          modal.removeEventListener( 'transitionend', transitionEnd );
+          modal.removeAttribute( 'style' );
+        }
+      }
+
       function handleEvent( e ){
         var btn = e.target,
             selector = e.target.getAttribute( 'data-open' ),
             modal = document.querySelector( selector );
 
         if( !btn.modal ){
-          btn.modal = window.Modal.show( {
+          btn.modal = new window.Modal( {
             opener: btn,
             dom: modal,
           //html: string from ajax call
@@ -189,9 +206,21 @@
             label: btn.getAttribute( 'data-label' )
           } );
         }
-        else{
-          window.Modal.show( btn.modal );
-        }
+
+        btn.modal.on( 'close', function(){
+          btn.modal.el.style.display = 'flex';
+          btn.modal.el.addEventListener( 'transitionend', transitionEnd );
+
+        } );
+
+        window.requestAnimationFrame( function(){
+          btn.modal.el.style.display = 'flex';
+
+          window.requestAnimationFrame( function(){
+
+            btn.modal.show();
+          } );
+        } );
       }
 
       Array.prototype.forEach.call( document.querySelectorAll( '[data-open]' ), function( el ){

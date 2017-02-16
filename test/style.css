@@ -45,9 +45,6 @@ figcaption{
 fieldset > *{
   display: block;
 }
-.modal{
-  display: none;
-}
 
 .modal-wrapper{
   position: fixed;
@@ -62,9 +59,7 @@ fieldset > *{
   transition: background 0.3s cubic-bezier( 0.250,  0.460, 0.450, 0.940 );
 }
 
-.modal-wrapper .modal,
-dialog .modal{
-  display: block;
+.modal{
   background-color: #fff;
   width: 50%;
   max-width: 600px;
@@ -75,13 +70,12 @@ dialog .modal{
   transition-duration: 0.3s;
 }
 
-.modal-wrapper.modal-hidden{
-  /*background-color: rgba( 0, 0, 0, 0 );*/
+.modal-wrapper[aria-hidden="true"]{
+  display: none;
   transition-timing-function: cubic-bezier( 0.550,  0.085, 0.680, 0.530 );
 }
 
-.modal-wrapper.modal-hidden .modal,
-dialog.modal-hidden .modal{
+.modal-wrapper[aria-hidden="true"] .modal{
   transform: translateY( 35% );
   transition-timing-function: cubic-bezier( 0.550,  0.085, 0.680, 0.530 );
   opacity: 0;
