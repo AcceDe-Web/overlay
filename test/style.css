@@ -75,7 +75,7 @@ fieldset > *{
   transition-timing-function: cubic-bezier( 0.550,  0.085, 0.680, 0.530 );
 }
 
-.modal-wrapper[aria-hidden="true"] .modal{
+.modal-wrapper.closed .modal{
   transform: translateY( 35% );
   transition-timing-function: cubic-bezier( 0.550,  0.085, 0.680, 0.530 );
   opacity: 0;
