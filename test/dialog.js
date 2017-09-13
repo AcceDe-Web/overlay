@@ -8,7 +8,7 @@ const test = require( 'tape' ),
         // show: true
       });
 
-nightmare.goto( 'http://localhost:3000/' );
+nightmare.goto( `file://${__dirname}/index.html` );
 
 
 // Label test suite in output
@@ -69,7 +69,7 @@ test( '03| Le focus clavier se positionne sur le premier bouton de fermeture sâ€
     .click( '[data-open=".modal6"]' )
     .wait( 50 )
     .evaluate(() => {
-      var interactiveEl = document.querySelector( '.modal-wrapper .close' );
+      var interactiveEl = document.querySelector( '.modal-wrapper .modal6 .close' );
       // skip the first button which is the close button
       return interactiveEl === document.activeElement;
     })
