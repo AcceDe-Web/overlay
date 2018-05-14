@@ -1,374 +1,224 @@
+/* eslint-env node */
+'use strict';
 
-/* jshint esnext:true, node:true  */
-/* globals require */
+const test = require( 'tape' );
+const puppeteer = require( 'puppeteer' );
+const path = `file://${__dirname}/index.html`;
 
-const test = require( 'tape' ),
-      Nightmare = require( './nightmare' ),
-      nightmare = new Nightmare( {
-        // show: true
-      } );
+const createBrowser = async () => {
+  const browser = await puppeteer.launch({headless: true});
+  const page = await browser.newPage();
 
-nightmare.goto( `file://${__dirname}/index.html` );
+  await page.goto( path );
+
+  return [ browser, page ];
+};
+
+test( 'Ouverture de modale', async t => {
+  const [ browser, page ] = await createBrowser();
+
+  await page.click( '[data-open=".modal1"]' );
+  await page.waitFor( 20 );
+
+  const [ ariaHidden, interactiveElIsFocused, disabled, hidden ] = await page.evaluate(() => {
+    const modal = document.querySelector( '.modal-wrapper' );
+
+    const interactiveEl = document.querySelectorAll( '.modal-wrapper button' );
+    // skip the first button which is the close button
+    const interactiveElIsFocused = interactiveEl[1] === document.activeElement;
 
 
-// Label test suite in output
-test( '-------------------------------', ( t ) => {
-  t.comment( 'Running *Modal* test suite.' );
-  t.comment( '-------------------------------' );
+    const interactiveEls = Array.from( document.querySelectorAll( 'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, [tabindex], [contenteditable]' ) );
+
+    const disabled = interactiveEls.every( el => {
+      // skip interactive elements contained in the modal
+      if( modal.contains( el ) ){
+        return true;
+      }
+
+      return el.tabIndex < 0;
+    } );
+
+    const bodyChildren = Array.from( document.body.children );
+
+    const hidden = bodyChildren.every( el => {
+      // skip the modal and script tags
+      if( modal === el || 'SCRIPT' === el.nodeName  ){
+        return true;
+      }
+
+      return el.getAttribute( 'aria-hidden' ) === 'true';
+    } );
+
+
+    return [
+      modal.getAttribute('aria-hidden'),
+      interactiveElIsFocused,
+      disabled,
+      hidden
+    ]
+
+  });
+
+  t.same( ariaHidden, 'false', 'L’attribut « aria-hidden » du conteneur de la modale a la valeur « false ».' );
+  t.true( interactiveElIsFocused, 'Le focus clavier est positionné sur le premier élément interactif de la modale (hors bouton de fermeture).');
+  t.true( disabled, 'La totalité des éléments interactifs hors de la modale sont désactivés via « tabindex="-1" ».');
+  t.true( hidden, 'La totalité de la page en arrière-plan n’est plus lisible via « aria-hidden="true" ».');
+
+  await browser.close();
+
   t.end();
 });
 
-// test 1
-test( '01| Le conteneur de la modale doit avoir la valeur « false » pour l’attribut « aria-hidden ».', ( t ) => {
-  nightmare.refresh()
-    .click( '[data-open=".modal1"]' )
-    .wait( 50 )
-    .evaluate(() => {
-      var modal = document.querySelector( '.modal-wrapper' );
-      return modal.getAttribute('aria-hidden');
-    })
-    .then(( ariaHidden ) => {
-      t.equal( ariaHidden, 'false', '« aria-hidden » doit valoir « false ».' );
-      t.end();
-    })
-    .catch( err => {
-      nightmare.end()
-      .then( () => {
-        t.fail( err );
-        t.end();
-      });
-    } );
+test( 'Ouverture de modale (sans éléments interactifs)', async t => {
+  const [ browser, page ] = await createBrowser();
+
+  await page.click( '[data-open=".modal2"]' );
+
+  const interactiveElIsFocused = await page.evaluate(() => {
+    var interactiveEl = document.querySelector( '.modal-wrapper .close' );
+    // skip the first button which is the close button
+    return interactiveEl === document.activeElement;
+  })
+
+  t.true( interactiveElIsFocused, 'Le focus clavier se positionne sur le premier bouton de fermeture s’il n’y a pas d’autre éléments interactifs.' );
+
+  await browser.close();
+
+  t.end();
 });
 
-test( '02| Le focus clavier doit être positionné sur le premier élément interactif de la modale qui n’est pas un bouton de fermeture.', ( t ) => {
-  nightmare.refresh()
-    .click( '[data-open=".modal1"]' )
-    .wait( 50 )
-    .evaluate(() => {
-      var interactiveEl = document.querySelectorAll( '.modal-wrapper button' );
-      // skip the first button which is the close button
-      return interactiveEl[1] === document.activeElement;
-    })
-    .then(( interactiveElIsFocused ) => {
-      t.true( interactiveElIsFocused );
-      t.end();
-    })
-    .catch( err => {
-      nightmare.end()
-      .then( () => {
-        t.fail( err );
-        t.end();
-      });
-    } );
-});
+test( 'Fermeture de modale (Echap)', async t => {
+  const [ browser, page ] = await createBrowser();
 
-test( '03| Le focus clavier se positionne sur le premier bouton de fermeture s’il n’y a pas d’autre éléments interactifs.', ( t ) => {
-  nightmare.refresh()
-    .click( '[data-open=".modal2"]' )
-    .wait( 50 )
-    .evaluate(() => {
-      var interactiveEl = document.querySelector( '.modal-wrapper .close' );
-      // skip the first button which is the close button
-      return interactiveEl === document.activeElement;
-    })
-    .then(( interactiveElIsFocused ) => {
-      t.true( interactiveElIsFocused );
-      t.end();
-    })
-    .catch( err => {
-      nightmare.end()
-      .then( () => {
-        t.fail( err );
-        t.end();
-      });
-    } );
-});
+  await page.click( '[data-open=".modal2"]' );
+  await page.keyboard.press( 'Escape' );
+  await page.waitFor( 20 );
 
-test( '04| La totalité des éléments interactifs hors de la modale sont désactivés.', ( t ) => {
-  nightmare.refresh()
-    .click( '[data-open=".modal2"]' )
-    .wait( 50 )
-    .evaluate( () => {
+  const closed = await page  .evaluate(() => {
+    let modal = document.querySelector( '.modal-wrapper' );
 
-      let interactiveEls = Array.from( document.querySelectorAll( 'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, [tabindex], [contenteditable]' ) ),
-          modal = document.querySelector( '.modal-wrapper' );
-
-      let disabled = interactiveEls.every( el => {
-        // skip interactive elements contained in the modal
-        if( modal.contains( el ) ){
-          return true;
-        }
-
-        return el.tabIndex < 0;
-      } );
-
-      return disabled;
-    })
-    .then( disabled => {
-
-      t.true( disabled );
-      t.end();
-    })
-    .catch( err => {
-      nightmare.end()
-      .then( () => {
-        t.fail( err );
-        t.end();
-      });
-    } );
-});
-
-test( '05| La totalité de la page en arrière-plan n’est plus lisible.', ( t ) => {
-  nightmare.refresh()
-    .click( '[data-open=".modal2"]' )
-    .wait( 50 )
-    .evaluate( () => {
-
-      let bodyChildren = Array.from( document.body.children ),
-          modal = document.querySelector( '.modal-wrapper' );
-
-      let disabled = bodyChildren.every( el => {
-        // skip the modal and script tags
-        if( modal === el || 'SCRIPT' === el.nodeName  ){
-          return true;
-        }
-
-        return el.getAttribute( 'aria-hidden' ) === 'true';
-      } );
-
-      return disabled;
-    })
-    .then( disabled => {
-      t.true( disabled );
-      t.end();
-    })
-    .catch( err => {
-      nightmare.end()
-      .then( () => {
-        t.fail( err );
-        t.end();
-      });
-    } );
-});
-
-test( '06| La touche « echap » permet de fermer la modale.', ( t ) => {
-  nightmare.refresh()
-    .click( '[data-open=".modal2"]' )
-    .wait( 50 )
-    .key( 27 )
-    .wait( 500 )
-    .evaluate( () => {
-
-      let modal = document.querySelector( '.modal-wrapper' );
-
-      return modal.getAttribute('aria-hidden') === 'true';
-    })
-    .then( closed => {
-      t.true( closed );
-      t.end();
-    })
-    .catch( err => {
-      nightmare.end()
-      .then( () => {
-        t.fail( err );
-        t.end();
-      });
-    } );
-});
-
-test( '07| Un clic en dehors du contenu de la modale ferme la modale.', ( t ) => {
-  nightmare.refresh()
-    .click( '[data-open=".modal2"]' )
-    .wait( 50 )
-    .click( '.modal-wrapper' )
-    .wait( 500 )
-    .evaluate( () => {
-
-      let modal = document.querySelector( '.modal-wrapper' );
-
-      return modal.getAttribute('aria-hidden') === 'true';
-    })
-    .then( closed => {
-      t.true( closed );
-      t.end();
-    })
-    .catch( err => {
-      nightmare.end()
-      .then( () => {
-        t.fail( err );
-        t.end();
-      });
-    } );
-});
-
-test( '08| Un clic sur un bouton de fermeture ferme la modale.', ( t ) => {
-  nightmare.refresh()
-    .click( '[data-open=".modal2"]' )
-    .wait( 50 )
-    .click( '.modal-wrapper .close' )
-    .wait( 500 )
-    .evaluate( () => {
-
-      let modal = document.querySelector( '.modal-wrapper' );
-
-      return modal.getAttribute('aria-hidden') === 'true';
-    })
-    .then( closed => {
-      t.true( closed );
-      t.end();
-    })
-    .catch( err => {
-      nightmare.end()
-      .then( () => {
-        t.fail( err );
-        t.end();
-      });
-    } );
-});
-
-
-test( '09| Un clic dans le contenu de la modal ne ferme pas la modale.', ( t ) => {
-  nightmare.refresh()
-    .click( '[data-open=".modal2"]' )
-    .wait( 50 )
-    .click( '.modal-wrapper .modal.modal2' )
-    .wait( 500 )
-    .evaluate( () => {
-
-      let modal = document.querySelector( '.modal-wrapper' );
-
-      return modal.getAttribute('aria-hidden') === 'false';
-    })
-    .then( opened => {
-      t.true( opened );
-      t.end();
-    })
-    .catch( err => {
-      nightmare.end()
-      .then( () => {
-        t.fail( err );
-        t.end();
-      });
-    } );
-});
-
-test( '10| Après fermeture, la totalité des éléments interactifs hors de la modale sont réactivés.', ( t ) => {
-  nightmare.refresh()
-    .evaluate( () => {
-
-      window.interactiveEls = Array.from( document.querySelectorAll( 'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, [tabindex], [contenteditable]' ) );
-
-      window.interactiveEls.forEach( el => {
-        el.testIndex = el.tabIndex;
-      } );
-
-    })
-    .click( '[data-open=".modal2"]' )
-    .wait( 50 )
-    .key( 27 )
-    .wait( 500 )
-    .evaluate( () => {
-      return window.interactiveEls.every( el => {
-        return el.testIndex === el.tabIndex;
-      } );
-    })
-    .then( ok => {
-      t.true( ok );
-      t.end();
-    })
-    .catch( err => {
-      nightmare.end()
-      .then( () => {
-        t.fail( err );
-        t.end();
-      });
-    } );
-});
-
-test( '11| Après fermeture, la totalité de la page en arrière-plan est lisible.', ( t ) => {
-  nightmare.refresh()
-    .click( '[data-open=".modal2"]' )
-    .wait( 50 )
-    .key( 27 )
-    .wait( 500 )
-    .evaluate( () => {
-
-      let bodyChildren = Array.from( document.body.children );
-
-      return bodyChildren.every( el => {
-        let isModal = el.classList.contains('modal-wrapper');
-        return ( isModal && el.getAttribute( 'aria-hidden' ) === 'true' )
-            || ( !isModal && !el.hasAttribute( 'aria-hidden' ))
-            || ( !isModal && el.getAttribute( 'aria-hidden' ) === 'false' );
-      });
-    })
-    .then( readable => {
-      t.true( readable );
-      t.end();
-    })
-    .catch( err => {
-      nightmare.end()
-      .then( () => {
-        t.fail( err );
-        t.end();
-      });
-    } );
-});
-
-test( '12| Après fermeture, la modale doit avoir la valeur « true » pour l’attribut « aria-hidden ».', ( t ) => {
-  nightmare.refresh()
-    .click( '[data-open=".modal2"]' )
-    .wait( 50 )
-    .evaluate( () => {
-      window.currentModal = document.querySelector( '.modal-wrapper' );
-    } )
-    .key( 27 )
-    .wait( 500 )
-    .evaluate( () => {
-      const modalOpener = document.querySelector( '[data-open=".modal2"]' );
-      return modalOpener.modal.el.getAttribute( 'aria-hidden' ) === 'true';
-    })
-    .then( hidden => {
-      t.true( hidden );
-      t.end();
-    })
-    .catch( err => {
-      nightmare.end()
-      .then( () => {
-        t.fail( err );
-        t.end();
-      });
-    } );
-});
-
-test( '13| Après fermeture, le focus est placé sur l’élément interactif déclencheur de l’ouverture.', ( t ) => {
-  nightmare.refresh()
-    .click( '[data-open=".modal2"]' )
-    .wait( 50 )
-    .key( 27 )
-    .wait( 500 )
-    .evaluate( () => {
-      return document.activeElement === document.querySelector( '[data-open=".modal2"]' );
-    })
-    .then( focused => {
-      t.true( focused );
-      t.end();
-    })
-    .catch( err => {
-      nightmare.end()
-      .then( () => {
-        t.fail( err );
-        t.end();
-      });
-    } );
-});
-
-test( '-------------------------------', ( t ) => {
-  t.comment( 'Test suite done' );
-  t.comment( '-------------------------------' );
-  nightmare.end()
-  .then( () => {
-    t.end();
+    return modal.getAttribute('aria-hidden') === 'true';
   });
+
+  t.true( closed, 'La touche « Echap » permet de fermer la modale.' );
+
+  await browser.close();
+
+  t.end();
 });
 
+test( 'Fermeture de modale (click extérieur)', async t => {
+  const [ browser, page ] = await createBrowser();
+
+  await page.click( '[data-open=".modal2"]' );
+  await page.waitFor( 5 );
+  await page.mouse.click( 5, 5 );
+  await page.waitFor( 20 );
+
+  const closed = await page.evaluate(() => {
+    let modal = document.querySelector( '.modal-wrapper' );
+
+    return modal.getAttribute('aria-hidden') === 'true';
+  });
+
+  t.true( closed, 'Un clic en dehors du contenu de la modale ferme la modale.' );
+
+  await browser.close();
+
+  t.end();
+});
+
+test( 'Fermeture de modale (bouton de fermeture)', async t => {
+  const [ browser, page ] = await createBrowser();
+
+  await page.click( '[data-open=".modal2"]' );
+  await page.click( '.modal-wrapper .close' );
+  await page.waitFor( 20 );
+
+  const closed = await page  .evaluate(() => {
+    let modal = document.querySelector( '.modal-wrapper' );
+
+    return modal.getAttribute('aria-hidden') === 'true';
+  });
+
+  t.true( closed, 'Un clic sur un bouton de fermeture ferme la modale.' );
+
+  await browser.close();
+
+  t.end();
+});
+
+
+test( 'Fermeture de modale (click intérieur)', async t => {
+  const [ browser, page ] = await createBrowser();
+
+  await page.click( '[data-open=".modal2"]' );
+  await page.click( '.modal-wrapper .modal.modal2' );
+  await page.waitFor( 20 );
+
+  const opened = await page  .evaluate(() => {
+    let modal = document.querySelector( '.modal-wrapper' );
+
+    return modal.getAttribute('aria-hidden') === 'false';
+  });
+
+  t.true( opened, 'Un clic dans le contenu de la modal ne ferme pas la modale.' );
+
+  await browser.close();
+
+  t.end();
+});
+
+test( 'Fermeture de modale', async t => {
+  const [ browser, page ] = await createBrowser();
+
+  await page.evaluate(() => {
+    window.interactiveEls = Array.from( document.querySelectorAll( 'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, [tabindex], [contenteditable]' ) );
+
+    window.interactiveEls.forEach( el => {
+      el.testIndex = el.tabIndex;
+    });
+
+  })
+
+  await page.click( '[data-open=".modal2"]' );
+  await page.keyboard.press( 'Escape' );
+  await page.waitFor( 20 );
+
+  const [ enabled, visible, hidden, focused ] = await page  .evaluate(() => {
+    const enabled = window.interactiveEls.every( el => {
+      return el.testIndex === el.tabIndex;
+    } );
+
+    const bodyChildren = Array.from( document.body.children );
+
+    const visible = bodyChildren.every( el => {
+      const isModal = el.classList.contains('modal-wrapper');
+      return ( isModal && el.getAttribute( 'aria-hidden' ) === 'true' )
+          || ( !isModal && !el.hasAttribute( 'aria-hidden' ))
+          || ( !isModal && el.getAttribute( 'aria-hidden' ) === 'false' );
+    });
+
+    const modalOpener = document.querySelector( '[data-open=".modal2"]' );
+    const hidden = modalOpener.modal.el.getAttribute( 'aria-hidden' ) === 'true';
+
+    const focused = document.activeElement === document.querySelector( '[data-open=".modal2"]' );
+
+    return [
+      enabled,
+      visible,
+      hidden,
+      focused
+    ]
+  });
+
+  t.true( enabled, 'La totalité des éléments interactifs hors de la modale sont réactivés.' );
+  t.true( visible, 'La totalité de la page en arrière-plan est lisible.' );
+  t.true( hidden, 'La modale doit avoir la valeur « true » pour l’attribut « aria-hidden ».' );
+  t.true( hidden, 'Le focus est placé sur l’élément interactif déclencheur de l’ouverture.' );
+
+  await browser.close();
+
+  t.end();
+});

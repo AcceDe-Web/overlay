@@ -1,5 +1,5 @@
 /**
- * accedeweb-modal - WAI-ARIA modal plugin based on AcceDe Web instructions
+ * @accedeweb/modal - WAI-ARIA modal plugin based on AcceDe Web instructions
  * @version v0.0.0
  * @link http://a11y.switch.paris/
  * @license ISC
@@ -184,6 +184,7 @@
      * @property {object} options The modal's options
      * @property {function} show display the modal - triggers a `show` event
     **/
+
     return {
       el: this.el,
       options: this.options,
@@ -196,6 +197,7 @@
 
   // store a counter of modals in case we need to dynamicaly create id's
   Modal.modalIndex = 0;
+  Modal.modalCount = 0;
 
   /**
    * Register all needed events
@@ -367,14 +369,14 @@
    * Handle click behaviours
    * @param {Object} e `click` DOM event
    */
-  Modal.prototype.handleClick = function (e) {
+  Modal.prototype.handleClick = function (event) {
     // don't close if the click doesn't come from the modal itself
     // or if we don't want to close it when clicking outside of the modal's content
-    if (this.options.closeOnCancel === false || e.target !== this.el) {
+    if (this.options.closeOnCancel === false || event.target !== this.el) {
       return;
     }
 
-    this.handleClose(e, 'cancel');
+    this.handleClose(event, 'cancel');
   };
 
   /**
@@ -382,7 +384,7 @@
    * @param {Object} e DOM event object or object with a type property.
    * @param {string} returnValue Close action
    */
-  Modal.prototype.handleClose = function (e, returnValue) {
+  Modal.prototype.handleClose = function (event, returnValue) {
     // don't close on cancel if role is 'alertdialog'
     if (this.options.role === 'alertdialog' && returnValue === 'cancel') {
       return;
@@ -391,14 +393,19 @@
     // remove all event listeners
     this.unbind();
 
-    this.trigger('hide');
+    this.trigger('hide', returnValue);
 
     this.el.setAttribute('aria-hidden', 'true');
 
-    if (this.options.modal) {
+    console.log(this.options.modal, Modal.modalCount);
+
+    if (this.options.modal && Modal.modalCount === 1) {
       // enable focusable elements
       this.enableDocument();
     }
+
+    // update the modalCount
+    Modal.modalCount--;
 
     // focus the button that was used to open the modal or fallback on the body
     this.options.opener.focus();
@@ -408,10 +415,11 @@
    * Handle keyboard behaviours
    * @param {Object} e `keydown` DOM event
    */
-  Modal.prototype.handleKeydown = function (e) {
+  Modal.prototype.handleKeydown = function (event) {
     // close the modal on escape press if its not a dialog tag
-    if (e.keyCode === 27 && this.options.closeOnCancel !== false) {
-      this.handleClose(e, 'cancel');
+    if (event.keyCode === 27 && this.options.closeOnCancel !== false) {
+      this.handleClose(event, 'cancel');
+
       return true;
     }
 
@@ -444,6 +452,8 @@
     else {
         this.el = this.createDom();
       }
+
+    this.el.modal = this;
 
     // store all close buttons of the modal
     this.el.closeBtns = Array.prototype.slice.call(this.el.querySelectorAll(this.options.closeSelector));
@@ -521,11 +531,18 @@
    * Show modal behaviour
    */
   Modal.prototype.show = function () {
+    Modal.modalCount++;
+
     // bind eventListeners to the modal
     this.bind();
 
     // store the current focused element before focusing the modal
     this.options.opener = this.options.opener || document.activeElement;
+
+    // IE can't focus a svg element
+    if (this.options.opener.nodeName === 'svg') {
+      this.options.opener = this.options.opener.parentNode;
+    }
 
     this.trigger('show');
 
@@ -537,7 +554,7 @@
     this.focus();
 
     // disable any focusable element not in the modal
-    if (this.options.modal && !this.documentDisabled) {
+    if (Modal.modalCount === 1 && this.options.modal && !this.documentDisabled) {
       this.disableDocument();
     }
     // in case we're passing a dom element check if it's focusable elements have not been "disabled"
@@ -550,7 +567,7 @@
    * Trigger callback associated to passed event
    * @param {string} eventName Event name. Can be `hide`, `show`.
    */
-  Modal.prototype.trigger = function (eventName) {
+  Modal.prototype.trigger = function (eventName, params) {
     var _this4 = this;
 
     if (!this.callbacks[eventName]) {
@@ -558,7 +575,7 @@
     }
 
     this.callbacks[eventName].forEach(function (callback) {
-      callback(_this4);
+      callback(_this4, params);
     });
   };
 

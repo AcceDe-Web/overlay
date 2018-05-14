@@ -56,7 +56,7 @@ fieldset > *{
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.3s cubic-bezier( 0.250,  0.460, 0.450, 0.940 );
+  transition: background 0.01s cubic-bezier( 0.250,  0.460, 0.450, 0.940 );
 }
 
 .modal{
@@ -67,7 +67,7 @@ fieldset > *{
   padding: 20px;
   transition-property: transform, opacity;
   transition-timing-function: cubic-bezier( 0.250,  0.460, 0.450, 0.940 );
-  transition-duration: 0.3s;
+  transition-duration: 0.01s;
 }
 
 .modal-wrapper[aria-hidden="true"]{
