@@ -47,16 +47,17 @@ fieldset > *{
 }
 
 .modal-wrapper{
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  left: 0;
-  top: 0;
   background-color: rgba( 0,0,0,0.3 );
+  box-sizing: border-box;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  height: 100vh;
+  left: 0;
+  overflow: auto;
+  padding: 50px 20px;
+  position: fixed;
+  top: 0;
   transition: background 0.01s cubic-bezier( 0.250,  0.460, 0.450, 0.940 );
+  width: 100%;
 }
 
 .modal{
@@ -65,6 +66,7 @@ fieldset > *{
   max-width: 600px;
   min-width: 300px;
   padding: 20px;
+  margin: auto;
   transition-property: transform, opacity;
   transition-timing-function: cubic-bezier( 0.250,  0.460, 0.450, 0.940 );
   transition-duration: 0.01s;
@@ -100,7 +102,7 @@ dialog::backdrop{
 dialog[open]{
   display: flex;
 }
-
+/*
 .modal6 [data-label] {
   display: none;
-}
+}*/
