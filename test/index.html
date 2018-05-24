@@ -213,28 +213,21 @@
         if( !btn.modal ){
           btn.modal = new window.Modal( {
             opener: btn,
-            dom: modal,
-          //html: string from ajax call
+            content: modal,
             tagName: 'section',
             className: 'modal-wrapper',
             closeSelector: '.close',
             role: btn.getAttribute( 'data-role' ),
             label: btn.getAttribute( 'data-label' )
-          } );
+          });
 
-          //btn.modal.on( 'hide', function(){
-          //  btn.modal.el.style.display = 'flex';
-          //  btn.modal.el.addEventListener( 'transitionend', transitionEnd );
-          //  btn.modal.el.classList.add( 'closed' );
+          btn.modal.addEventListener( 'close', e => {
+            console.log( e.type, e.target );
+          });
 
-          //} );
-
-          //btn.modal.on( 'show', function(){
-          //  btn.modal.el.style.display = 'flex';
-          //  window.requestAnimationFrame( function(){
-          //    btn.modal.el.classList.remove( 'closed' );
-          //  } );
-          //} );
+          btn.modal.addEventListener( 'cancel', e => {
+            console.log( e.type, e.target );
+          });
         }
 
         btn.modal.show();

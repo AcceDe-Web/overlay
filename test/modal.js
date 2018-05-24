@@ -31,7 +31,6 @@ test( 'Ouverture de modale', async t => {
     // skip the first button which is the close button
     const interactiveElIsFocused = interactiveEl[ 1 ] === document.activeElement;
 
-
     const interactiveEls = Array.from( document.querySelectorAll( 'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, [tabindex], [contenteditable]' ));
 
     const disabled = interactiveEls.every( el => {
@@ -99,20 +98,41 @@ test( 'Fermeture de modale (Echap)', async t => {
 
   await page.click( '[data-open=".modal2"]' );
   await page.waitFor( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
+
+  await page.evaluate(() => {
+    window.callbacks = {};
+
+    const button = document.querySelector( '[data-open=".modal2"]' );
+
+    button.modal.addEventListener( 'close', e => {
+      window.callbacks.close = e.type;
+    });
+
+    button.modal.addEventListener( 'cancel', e => {
+      window.callbacks.cancel = e.type;
+    });
+  });
+
   await page.keyboard.press( 'Escape' );
 
-  page.waitFor( '.modal-wrapper[aria-hidden="true"]', waitForOptions )
+  await page.waitFor( '.modal-wrapper[aria-hidden="true"]', waitForOptions )
     .then(() => {
       t.pass( message );
     })
     .catch(() => {
       t.fail( message );
-    })
-    .then( async () => {
-      await browser.close();
-
-      t.end();
     });
+
+  const callbacks = await page.evaluate(() => {
+    return window.callbacks;
+  });
+
+  t.true( callbacks.cancel === 'cancel', 'La touche « Echap » déclenche un évènement « cancel »' );
+  t.true( callbacks.close === 'close', 'La touche « Echap » déclenche un évènement « close »' );
+
+  await browser.close();
+
+  t.end();
 });
 
 test( 'Fermeture de modale (click extérieur)', async t => {
@@ -121,20 +141,42 @@ test( 'Fermeture de modale (click extérieur)', async t => {
 
   await page.click( '[data-open=".modal2"]' );
   await page.waitFor( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
+
+  await page.evaluate(() => {
+    window.callbacks = {};
+
+    const button = document.querySelector( '[data-open=".modal2"]' );
+
+    button.modal.addEventListener( 'close', e => {
+      window.callbacks.close = e.type;
+    });
+
+    button.modal.addEventListener( 'cancel', e => {
+      window.callbacks.cancel = e.type;
+    });
+  });
+
   await page.mouse.click( 5, 5 );
 
-  page.waitFor( '.modal-wrapper[aria-hidden="true"]', waitForOptions )
+  await page.waitFor( '.modal-wrapper[aria-hidden="true"]', waitForOptions )
     .then(() => {
       t.pass( message );
     })
     .catch(() => {
       t.fail( message );
-    })
-    .then( async () => {
-      await browser.close();
-
-      t.end();
     });
+
+  const callbacks = await page.evaluate(() => {
+    return window.callbacks;
+  });
+
+  t.true( callbacks.cancel === 'cancel', 'Un clic en dehors du contenu de la modale déclenche un évènement « cancel »' );
+  t.true( callbacks.close === 'close', 'Un clic en dehors du contenu de la modale déclenche un évènement « close »' );
+
+
+  await browser.close();
+
+  t.end();
 });
 
 test( 'Fermeture de modale (bouton de fermeture)', async t => {
@@ -143,20 +185,41 @@ test( 'Fermeture de modale (bouton de fermeture)', async t => {
 
   await page.click( '[data-open=".modal2"]' );
   await page.waitFor( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
+
+  await page.evaluate(() => {
+    window.callbacks = {};
+
+    const button = document.querySelector( '[data-open=".modal2"]' );
+
+    button.modal.addEventListener( 'close', e => {
+      window.callbacks.close = e.type;
+    });
+
+    button.modal.addEventListener( 'cancel', e => {
+      window.callbacks.cancel = e.type;
+    });
+  });
+
   await page.click( '.modal-wrapper .close' );
 
-  page.waitFor( '.modal-wrapper[aria-hidden="true"]', waitForOptions )
+  await page.waitFor( '.modal-wrapper[aria-hidden="true"]', waitForOptions )
     .then(() => {
       t.pass( message );
     })
     .catch(() => {
       t.fail( message );
-    })
-    .then( async () => {
-      await browser.close();
-
-      t.end();
     });
+
+  const callbacks = await page.evaluate(() => {
+    return window.callbacks;
+  });
+
+  t.false( callbacks.cancel === 'cancel', 'Un clic en dehors du contenu de la modale ne déclenche pas un évènement « cancel »' );
+  t.true( callbacks.close === 'close', 'Un clic en dehors du contenu de la modale déclenche un évènement « close »' );
+
+  await browser.close();
+
+  t.end();
 });
 
 
@@ -235,3 +298,37 @@ test( 'Fermeture de modale', async t => {
 
   t.end();
 });
+
+/*
+test( 'Callbacks', async t => {
+  const [ browser, page ] = await createBrowser();
+
+  await page.click( '[data-open=".modal1"]' );
+  await page.waitFor( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
+
+  await page.evaluate(() => {
+    window.callbacks = {};
+
+    const button = document.querySelector( '[data-open=".modal1"]' );
+
+    button.modal.addEventListener( 'close', e => {
+      window.callbacks.close = e.type;
+    });
+
+    button.modal.addEventListener( 'cancel', e => {
+      window.callbacks.cancel = e.type;
+    });
+  });
+
+  await page.keyboard.press( 'Escape' );
+
+  const callbacks = await page.evaluate(() => {
+    return window.callbacks;
+  });
+
+
+  await browser.close();
+
+  t.end();
+});
+ */
