@@ -270,7 +270,7 @@
         el.setAttribute('aria-hidden', 'true');
 
         if (this.options.modal) {
-          el.setAttribute('aria-layer', 'true');
+          el.setAttribute('aria-modal', 'true');
         }
 
         // put content into the layer
@@ -582,7 +582,7 @@
         this.options.role = el.getAttribute('role');
 
         if (this.options.modal) {
-          el.setAttribute('aria-layer', 'true');
+          el.setAttribute('aria-modal', 'true');
         }
 
         return el;
