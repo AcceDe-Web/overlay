@@ -1,5 +1,5 @@
 /**
- * @accedeweb/modal - WAI-ARIA modal plugin based on AcceDe Web instructions
+ * @accedeweb/overlay - WAI-ARIA overlay plugin based on AcceDe Web instructions
  * @version v0.0.0
  * @link http://a11y.switch.paris/
  * @license ISC
@@ -8,7 +8,7 @@
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
-  (global.Modal = factory());
+  (global.Overlay = factory());
 }(this, (function () { 'use strict';
 
   /**
@@ -79,7 +79,6 @@
         }
 
         el.setAttribute('aria-hidden', 'true');
-        // el.setAttribute( 'inert', true );
 
         hiddenElements.push(el);
       });
@@ -142,48 +141,85 @@
   var callbackEvents = ['hide', 'show'];
   var textualElements = 'h1, h2, h3, h4, h5, h6, p, ul, dl, figure, img, table, canvas, detail';
 
-  var modalIndex = 0;
-  var modalCount = 0;
+  var layerIndex = 0;
+  var layerStack = [];
 
-  var Modal = function () {
-    _createClass(Modal, null, [{
-      key: 'modalCount',
-      get: function get() {
-        return modalCount;
-      },
-      set: function set(count) {
-        modalCount = count;
+  var cancelListener = function cancelListener(event) {
+    if (!layerStack.length || event.keyCode !== 27) {
+      return;
+    }
+
+    var topModal = layerStack[0].layer;
+
+    topModal._dispatchEvent('cancel');
+  };
+
+  var Overlay = function () {
+    _createClass(Overlay, [{
+      key: 'addEventListener',
+      value: function addEventListener() {
+        this.el.addEventListener.apply(this.el, arguments);
       }
     }, {
-      key: 'modalIndex',
+      key: 'returnValue',
       get: function get() {
-        return modalIndex;
+        return this._returnValue;
+      },
+      set: function set(value) {
+        if ((typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object') {
+          this._returnValue = JSON.stringify(value);
+
+          return;
+        }
+
+        this._returnValue = value.toString();
+      }
+    }], [{
+      key: 'layerIndex',
+      get: function get() {
+        return layerIndex;
       },
       set: function set(index) {
-        modalIndex = index;
+        layerIndex = index;
+      }
+    }, {
+      key: 'stack',
+      get: function get() {
+        return layerStack;
       }
     }]);
 
-    function Modal(el, options) {
-      _classCallCheck(this, Modal);
+    function Overlay(el, options) {
+      _classCallCheck(this, Overlay);
 
-      this.listeners = {
-        keydown: this._handleKeydown.bind(this),
-        click: this._handleClick.bind(this),
-        close: this._handleClose.bind(this)
-      };
+      this._handleCancel = this._handleCancel.bind(this);
+      this._handleClick = this._handleClick.bind(this);
+      this._handleClose = this._handleClose.bind(this);
 
       this.callbacks = {};
 
-      options = arguments[1] || _typeof(arguments[0]) === 'object' ? arguments[0] : {};
+      options = arguments[1] || (_typeof(arguments[0]) === 'object' ? arguments[0] : {});
       el = options !== arguments[0] ? arguments[0] : undefined;
+
+      // if element is a string, convert it to a DOM element
+      if (typeof el === 'string') {
+        var wrapper = document.createElement('div');
+
+        wrapper.innerHTML = el;
+
+        el = wrapper.firstChild;
+      }
 
       if (!el && !options) {
         throw new Error('No parameter passed.');
       }
 
-      if (!options.modal) {
+      if (options.modal === undefined) {
         options.modal = true;
+      }
+
+      if (!options.closeOnCancel) {
+        options.closeOnCancel = true;
       }
 
       this.options = options;
@@ -196,33 +232,34 @@
      */
 
 
-    _createClass(Modal, [{
+    _createClass(Overlay, [{
       key: '_bind',
       value: function _bind() {
         var _this = this;
 
-        // listen for keystrokes
-        this.el.addEventListener('keydown', this.listeners.keydown, true);
         // listen for clicks
-        this.el.addEventListener('click', this.listeners.click);
+        this.el.addEventListener('click', this._handleClick);
+
+        // listen for cancel
+        this.el.addEventListener('cancel', this._handleCancel);
 
         // bind click events on every element targeted by the "closeSelector" option
         if (this.el.closeBtns) {
           this.el.closeBtns.forEach(function (button) {
-            button.addEventListener('click', _this.listeners.close);
+            button.addEventListener('click', _this._handleClose);
           });
         }
       }
 
       /**
-       * Create modal DOM
+       * Create layer DOM
        * @returns {HTMLElement} Modal root HTML element
        */
 
     }, {
       key: '_createDom',
       value: function _createDom() {
-        // create a modal root element
+        // create a layer root element
         var el = document.createElement(this.options.tagName || 'div');
 
         // add user's classes
@@ -233,15 +270,15 @@
         el.setAttribute('aria-hidden', 'true');
 
         if (this.options.modal) {
-          el.setAttribute('aria-modal', 'true');
+          el.setAttribute('aria-layer', 'true');
         }
 
-        // put content into the modal
-        if (this.options.dom) {
-          if (typeof this.options.dom === 'string') {
-            el.innerHTML = this.options.dom;
+        // put content into the layer
+        if (this.options.content) {
+          if (typeof this.options.content === 'string') {
+            el.innerHTML = this.options.content;
           } else {
-            el.appendChild(this.options.dom);
+            el.appendChild(this.options.content);
           }
         }
 
@@ -250,18 +287,18 @@
           el.setAttribute('aria-label', this.options.label);
         }
 
-        // look for a label and a description inside the modal
+        // look for a label and a description inside the layer
         if (this.options.role) {
           el.setAttribute('role', this.options.role);
-          var modalNumber = Modal.modalIndex;
+          var layerNumber = Overlay.layerIndex;
 
-          // always provide a label when modal has a role
+          // always provide a label when layer has a role
           if (!this.options.label && !el.hasAttribute('aria-labelledby') && !el.hasAttribute('aria-label')) {
             var title = el.querySelector(this.options.titleSelector || '[data-label]');
             var titleId = void 0;
 
             if (title) {
-              titleId = title.id || 'modalTitle' + modalNumber;
+              titleId = title.id || 'layerTitle' + layerNumber;
               title.id = titleId;
               el.setAttribute('aria-labelledby', titleId);
             }
@@ -273,7 +310,7 @@
             var descriptionId = void 0;
 
             if (description) {
-              descriptionId = description.id || 'modalDescription' + modalNumber;
+              descriptionId = description.id || 'layerDescription' + layerNumber;
               description.id = descriptionId;
               el.setAttribute('aria-describedby', descriptionId);
             }
@@ -284,7 +321,7 @@
       }
 
       /**
-       * Disable all focusable DOM elements that do not belong to the modal
+       * Disable all focusable DOM elements that do not belong to the layer
        */
 
     }, {
@@ -294,9 +331,20 @@
         this.documentDisabled = true;
         inert.set(document.body, this.el);
       }
+    }, {
+      key: '_dispatchEvent',
+      value: function _dispatchEvent(eventName) {
+        var eventParams = {
+          cancelable: eventName === 'cancel'
+        };
+
+        var event = new window.CustomEvent(eventName, eventParams);
+
+        this.el.dispatchEvent(event);
+      }
 
       /**
-       * Enable all focusable DOM elements that do not belong to the modal
+       * Enable all focusable DOM elements that do not belong to the layer
        */
 
     }, {
@@ -308,12 +356,12 @@
       }
 
       /**
-       * Enabling only modal focusable elements
+       * Enabling only layer focusable elements
        */
 
     }, {
-      key: '_enableModal',
-      value: function _enableModal() {
+      key: '_enableLayer',
+      value: function _enableLayer() {
         inert.unset(this.el);
       }
 
@@ -335,7 +383,7 @@
 
         var screenHeight = window.innerHeight;
 
-        // search for every focusable element in the modal
+        // search for every focusable element in the layer
         Array.prototype.some.call(this.el.querySelectorAll(inert.focusables), function (el) {
           var closeBtn = void 0;
 
@@ -373,7 +421,7 @@
           }
         }
 
-        // search for every focusable element in the modal
+        // search for every focusable element in the layer
         Array.prototype.some.call(this.el.querySelectorAll(textualElements), function (el) {
           // test if focusable element is visible and not a close button
           if (el.offsetWidth || el.offsetHeight) {
@@ -389,7 +437,7 @@
       }
 
       /**
-       * Set focus on modal first interactive element
+       * Set focus on layer first interactive element
        */
 
     }, {
@@ -407,103 +455,101 @@
           _this3.el.firstInteractiveElement.focus();
         });
       }
+    }, {
+      key: '_handleCancel',
+      value: function _handleCancel(event) {
+        if (event.defaultPrevented || this.options.role === 'alertdialog') {
+          return;
+        }
+
+        this._handleClose(event);
+      }
 
       /**
        * Handle click behaviours
-       * @param {Object} e `click` DOM event
+       * @param {MouseEvent} event `click` DOM event
        */
 
     }, {
       key: '_handleClick',
       value: function _handleClick(event) {
-        // don't close if the click doesn't come from the modal itself
-        // or if we don't want to close it when clicking outside of the modal's content
+        // don't close if the click doesn't come from the layer itself
+        // or if we don't want to close it when clicking outside of the layer's content
         if (this.options.closeOnCancel === false || event.target !== this.el) {
           return;
         }
 
-        this._handleClose(event, 'cancel');
+        // don't close when clicking outside an alertdialog
+        if (event.target === this.el && this.options.role === 'alertdialog') {
+          return;
+        }
+
+        this._dispatchEvent('cancel');
       }
       /**
-       * Handle modal close behaviour
-       * @param {Object} e DOM event object or object with a type property.
-       * @param {string} returnValue Close action
+       * Handle layer close behaviour
+       * @param {Object} event DOM event object or object with a type property.
        */
 
     }, {
       key: '_handleClose',
-      value: function _handleClose(event, returnValue) {
-        // don't close on cancel if role is 'alertdialog'
-        if (this.options.role === 'alertdialog' && returnValue === 'cancel') {
-          return;
-        }
+      value: function _handleClose() {
 
         // remove all event listeners
         this._unbind();
-        this._trigger('hide', returnValue);
+        this._dispatchEvent('close');
         this.el.setAttribute('aria-hidden', 'true');
 
-        if (this.options.modal && Modal.modalCount === 1) {
+        if (this.options.modal && Overlay.stack.length === 1) {
           // enable focusable elements
           this._enableDocument();
         }
 
-        // update the modalCount
-        Modal.modalCount--;
-        // focus the button that was used to open the modal or fallback on the body
+        // update the layer stack
+        Overlay.stack.splice(Overlay.stack.indexOf(this.el), 1);
+
+        // focus the button that was used to open the layer or fallback on the body
         this.options.opener.focus();
       }
+
       /**
-       * Handle keyboard behaviours
-       * @param {Object} e `keydown` DOM event
+       * Close layer behaviour
+       * @param {string} returnValue the value the layer will return
        */
 
     }, {
-      key: '_handleKeydown',
-      value: function _handleKeydown(event) {
-        // close the modal on escape press if its not a dialog tag
-        if (event.keyCode === 27 && this.options.closeOnCancel !== false) {
-          this._handleClose(event, 'cancel');
+      key: 'close',
+      value: function close(returnValue) {
 
-          return true;
+        if (returnValue) {
+          this.returnValue = returnValue;
         }
 
-        return false;
+        this._handleClose();
       }
       /**
-       * Hide modal behaviour
-       */
-
-    }, {
-      key: 'hide',
-      value: function hide() {
-        this._handleClose({
-          type: 'user'
-        });
-      }
-      /**
-       * Init modal
-       * @param {innerHTML} el Complete modal DOM element
+       * Init layer
+       * @param {HTMLElement} el Complete layer DOM element
        * @returns {Object} Modal instance
        */
 
     }, {
       key: '_init',
       value: function _init(el) {
-        // update the modalCount
-        Modal.modalIndex++;
+        // update the layer index
+        Overlay.layerIndex++;
         // when passing a DOM element
         if (el) {
           this.el = this._initDom(el);
         }
-        // create the root element for the modal
+        // create the root element for the layer
         else {
             this.el = this._createDom();
           }
 
-        this.el.modal = this;
+        this.el.layer = this;
 
-        // store all close buttons of the modal
+        // store all close buttons of the layer
         if (this.options.closeSelector) {
           this.el.closeBtns = Array.prototype.slice.call(this.el.querySelectorAll(this.options.closeSelector));
 
@@ -517,7 +563,7 @@
           this._validateModal();
         }
 
-        // force the modal to be a child of body
+        // force the layer to be a child of body
         if (this.el.parentNode !== document.body) {
           document.body.appendChild(this.el);
         }
@@ -525,8 +571,8 @@
         return this;
       }
       /**
-       * Init given modal DOM
-       * @param {innerHTML} el Complete modal DOM element
+       * Init given layer DOM
+       * @param {HTMLElement} el Complete layer DOM element
        * @returns {HTMLElement} Modal root element
        */
 
@@ -536,13 +582,13 @@
         this.options.role = el.getAttribute('role');
 
         if (this.options.modal) {
-          el.setAttribute('aria-modal', 'true');
+          el.setAttribute('aria-layer', 'true');
         }
 
         return el;
       }
       /**
-       * Handle removing modal handlers
+       * Handle removing layer handlers
        * @param {string} event Event name. Can be `hide`, `show`
        * @param {function} callback Callback function
        */
@@ -563,7 +609,7 @@
         this.callbacks[event].splice(callbackIndex, 1);
       }
       /**
-       * Handle adding modal handlers
+       * Handle adding layer handlers
        * @param {string} event Event name. Can be `hide`, `show`
        * @param {function} callback Callback function
        */
@@ -581,81 +627,71 @@
 
         this.callbacks[event].push(callback);
       }
+    }, {
+      key: 'removeEventListener',
+      value: function removeEventListener() {
+        this.el.removeEventListener.apply(this.el, arguments);
+      }
       /**
-       * Show modal behaviour
+       * Show layer behaviour
        */
 
     }, {
       key: 'show',
       value: function show() {
-        Modal.modalCount++;
-        // bind eventListeners to the modal
+        // add the new layer at the top of the stack
+        Overlay.stack.unshift(this.el);
+
+        // set the default returnValue of the layer
+        this.returnValue = '';
+
+        // bind eventListeners to the layer
         this._bind();
-        // store the current focused element before focusing the modal
+        // store the current focused element before focusing the layer
         this.options.opener = this.options.opener || document.activeElement;
         // IE can't focus a svg element
         if (this.options.opener.nodeName === 'svg') {
           this.options.opener = this.options.opener.parentNode;
         }
 
-        this._trigger('show');
-
         if (this.el.getAttribute('aria-hidden') !== 'false') {
-          // display the modal
+          // display the layer
           this.el.setAttribute('aria-hidden', 'false');
         }
 
         this._focus();
 
-        // disable any focusable element not in the modal
-        if (Modal.modalCount === 1 && this.options.modal && !this.documentDisabled) {
+        // disable any focusable element not in the layer
+        if (Overlay.stack.length === 1 && this.options.modal && !this.documentDisabled) {
           this._disableDocument();
         }
         // in case we're passing a dom element check if it's focusable elements have not been "disabled"
-        else if (this.documentDisabled && this.options.dom) {
-            this._enableModal();
+        else if (this.documentDisabled && this.options.content) {
+            this._enableLayer();
           }
       }
       /**
-       * Trigger callback associated to passed event
-       * @param {string} eventName Event name. Can be `hide`, `show`.
-       */
-
-    }, {
-      key: '_trigger',
-      value: function _trigger(eventName, params) {
-        var _this4 = this;
-
-        if (!this.callbacks[eventName]) {
-          return;
-        }
-
-        this.callbacks[eventName].forEach(function (callback) {
-          callback(_this4, params);
-        });
-      }
-      /**
-       * Remove all modal event bindings
+       * Remove all layer event bindings
        */
 
     }, {
       key: '_unbind',
       value: function _unbind() {
-        var _this5 = this;
+        var _this4 = this;
 
         // remove listeners
-        this.el.removeEventListener('keydown', this.listeners.keydown, true);
-        this.el.removeEventListener('click', this.listeners.click);
+        this.el.removeEventListener('click', this._handleClick);
+        this.el.removeEventListener('click', this._handleCancel);
 
         // remove close button listeners
         if (this.el.closeBtns) {
           this.el.closeBtns.forEach(function (button) {
-            button.removeEventListener('click', _this5.listeners.close);
+            button.removeEventListener('click', _this4._handleClose);
           });
         }
       }
       /**
-       * Validate modal a11y features and outputs an error if a11y is compromised
+       * Validate layer a11y features and outputs an error if a11y is compromised
        */
 
     }, {
@@ -663,24 +699,29 @@
       value: function _validateModal() {
         var label = this.el.getAttribute('aria-label');
         var description = this.el.getAttribute('aria-describedby');
-        var modalTitle = void 0;
+        var layerTitle = void 0;
 
         if (!label || label && label.trim().length < 0) {
-          modalTitle = this.el.querySelector('#' + this.el.getAttribute('aria-labelledby'));
-          if (!modalTitle || !this.el.contains(modalTitle)) {
-            throw new Error('No title is present in the modal. Use the "data-label" attribute on the visible title or pass the label using the "label" key when showing the modal.');
+          layerTitle = this.el.querySelector('#' + this.el.getAttribute('aria-labelledby'));
+          if (!layerTitle || !this.el.contains(layerTitle)) {
+            throw new Error('No title is present in the layer. Use the "data-label" attribute on the visible title or pass the label using the "label" key when creating the layer.');
           }
         }
 
         if (this.options.role === 'alertdialog' && !description) {
-          throw new Error('"alertdialog" modal needs a description, use the "data-description" attribute on the text content of the modal to validate the modal.');
+          throw new Error('"alertdialog" layer needs a description, use the "data-description" attribute on the text content of the layer to validate the layer.');
         }
       }
     }]);
 
-    return Modal;
+    return Overlay;
   }();
 
-  return Modal;
+  // listen to the escape key to close the top-most layer
+
+
+  document.body.addEventListener('keydown', cancelListener);
+
+  return Overlay;
 
 })));

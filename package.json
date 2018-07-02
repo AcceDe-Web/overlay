@@ -1,9 +1,9 @@
 {
-  "title": "AcceDe Web - modal",
-  "name": "@accedeweb/modal",
+  "title": "AcceDe Web - overlay",
+  "name": "@accedeweb/overlay",
   "version": "0.0.0",
-  "description": "WAI-ARIA modal plugin based on AcceDe Web instructions",
-  "main": "dist/modal.js",
+  "description": "WAI-ARIA overlay plugin based on AcceDe Web instructions",
+  "main": "dist/overlay.js",
   "module": "lib/index.js",
   "scripts": {
     "test": "tape test/*.js | tap-diff",
@@ -19,13 +19,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:AcceDe-Web/modal.git"
+    "url": "git@github.com:AcceDe-Web/overlay.git"
   },
   "keywords": [
     "accessibility",
     "modal",
     "popin",
     "dialog",
+    "layer",
+    "overlay",
     "javascript",
     "vanilla"
   ],

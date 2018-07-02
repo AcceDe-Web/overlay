@@ -1,6 +1,6 @@
-# AcceDe Web - modal
+# AcceDe Web - overlay
 
-WAI-ARIA modal plugin without dependencies.
+WAI-ARIA overlay plugin without dependencies.
 
 ## Requirements
 
@@ -8,7 +8,7 @@ WAI-ARIA modal plugin without dependencies.
 
 ## Methods
 
-## References
+## Properties
 
 ## Keyboard Interaction
 
