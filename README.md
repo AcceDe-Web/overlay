@@ -2,6 +2,16 @@
 
 WAI-ARIA overlay plugin without dependencies.
 
+This plugin is written in ES2015 and available either in uncompiled form in the `/lib` folder or compiled for ES5 in the `/dist` folder. If your project uses babel with Webpack or Rollup, you should change the exclusion so this plugin gets compiled.
+
+```js
+// .babelrc file or configuration within webpack or rollup
+{
+  "plugins": [...],
+  "exclude": "node_modules/!(@accedeweb)/**",
+}
+```
+
 ## Installation
 
 ```bash
