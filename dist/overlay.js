@@ -138,7 +138,6 @@
 
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-  var callbackEvents = ['hide', 'show'];
   var textualElements = 'h1, h2, h3, h4, h5, h6, p, ul, dl, figure, img, table, canvas, detail';
 
   var layerIndex = 0;
@@ -163,16 +162,16 @@
     }, {
       key: 'returnValue',
       get: function get() {
-        return this._returnValue;
+        return this.el.returnValue;
       },
       set: function set(value) {
         if ((typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object') {
-          this._returnValue = JSON.stringify(value);
+          this.el.returnValue = JSON.stringify(value);
 
           return;
         }
 
-        this._returnValue = value.toString();
+        this.el.returnValue = value.toString();
       }
     }], [{
       key: 'layerIndex',
@@ -185,7 +184,7 @@
     }, {
       key: 'stack',
       get: function get() {
-        return layerStack;
+        return layerStack.slice();
       }
     }]);
 
@@ -500,13 +499,13 @@
         this._dispatchEvent('close');
         this.el.setAttribute('aria-hidden', 'true');
 
-        if (this.options.modal && Overlay.stack.length === 1) {
+        if (this.options.modal && layerStack.length === 1) {
           // enable focusable elements
           this._enableDocument();
         }
 
         // update the layer stack
-        Overlay.stack.splice(Overlay.stack.indexOf(this.el), 1);
+        layerStack.splice(layerStack.indexOf(this.el), 1);
 
         // focus the button that was used to open the layer or fallback on the body
         this.options.opener.focus();
@@ -522,7 +521,7 @@
       value: function close(returnValue) {
 
         if (returnValue) {
-          this.returnValue = returnValue;
+          this.el.returnValue = returnValue;
         }
 
         this._handleClose();
@@ -548,6 +547,12 @@
           }
 
         this.el.layer = this;
+
+        // init the return value to an empty string
+        this.el.returnValue = '';
+
+        // add the close method to the root element
+        this.el.close = this.close;
 
         // store all close buttons of the layer
         if (this.options.closeSelector) {
@@ -587,46 +592,6 @@
 
         return el;
       }
-      /**
-       * Handle removing layer handlers
-       * @param {string} event Event name. Can be `hide`, `show`
-       * @param {function} callback Callback function
-       */
-
-    }, {
-      key: 'off',
-      value: function off(event, callback) {
-        if (!this.callbacks[event]) {
-          return;
-        }
-
-        var callbackIndex = this.callbacks[event].indexOf(callback);
-
-        if (callbackIndex < 0) {
-          return;
-        }
-
-        this.callbacks[event].splice(callbackIndex, 1);
-      }
-      /**
-       * Handle adding layer handlers
-       * @param {string} event Event name. Can be `hide`, `show`
-       * @param {function} callback Callback function
-       */
-
-    }, {
-      key: 'on',
-      value: function on(event, callback) {
-        if (callbackEvents.indexOf(event) < 0) {
-          return;
-        }
-
-        if (!this.callbacks[event]) {
-          this.callbacks[event] = [];
-        }
-
-        this.callbacks[event].push(callback);
-      }
     }, {
       key: 'removeEventListener',
       value: function removeEventListener() {
@@ -640,7 +605,7 @@
       key: 'show',
       value: function show() {
         // add the new layer at the top of the stack
-        Overlay.stack.unshift(this.el);
+        layerStack.unshift(this.el);
 
         // set the default returnValue of the layer
         this.returnValue = '';
@@ -662,7 +627,7 @@
         this._focus();
 
         // disable any focusable element not in the layer
-        if (Overlay.stack.length === 1 && this.options.modal && !this.documentDisabled) {
+        if (layerStack.length === 1 && this.options.modal && !this.documentDisabled) {
           this._disableDocument();
         }
         // in case we're passing a dom element check if it's focusable elements have not been "disabled"
