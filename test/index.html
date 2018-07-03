@@ -195,7 +195,7 @@
       <button class="close">Ok</button>
     </div>
 
-    <script src="../dist/modal.js"></script>
+    <script src="../dist/overlay.js"></script>
     <script>
       //function transitionEnd( e ){
       //  var modal = e.target.closest( '[aria-hidden]' );
@@ -211,7 +211,7 @@
             modal = document.querySelector( selector );
 
         if( !btn.modal ){
-          btn.modal = new window.Modal( {
+          btn.modal = new window.Overlay( {
             opener: btn,
             content: modal,
             tagName: 'section',
