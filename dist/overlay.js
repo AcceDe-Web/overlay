@@ -1,6 +1,6 @@
 /**
- * @accedeweb/overlay - WAI-ARIA overlay plugin based on AcceDe Web instructions
- * @version v0.0.0
+ * @accede-web/overlay - WAI-ARIA overlay plugin based on AcceDe Web instructions
+ * @version v1.0.0
  * @link http://a11y.switch.paris/
  * @license ISC
  **/
