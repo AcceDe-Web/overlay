@@ -8,14 +8,14 @@ This plugin is written in ES2015 and available either in uncompiled form in the 
 // .babelrc file or configuration within webpack or rollup
 {
   "plugins": [...],
-  "exclude": "node_modules/!(@accedeweb)/**",
+  "exclude": "node_modules/!(@accede-web)/**",
 }
 ```
 
 ## Installation
 
 ```bash
-$ npm install @accedeweb/overlay
+$ npm install @accede-web/overlay
 ```
 
 ## Methods
