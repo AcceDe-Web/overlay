@@ -27,9 +27,9 @@ test( 'Ouverture de dialog', async t => {
   const [ ariaHidden, interactiveElIsFocused, disabled, hidden, role, labelMatch ] = await page.evaluate(() => {
     const modal = document.querySelector( '.modal-wrapper' );
 
-    const interactiveEl = document.querySelectorAll( '.modal-wrapper button' );
+    const interactiveEl = document.querySelector( '.modal-wrapper button' );
     // skip the first button which is the close button
-    const interactiveElIsFocused = interactiveEl[ 1 ] === document.activeElement;
+    const interactiveElIsFocused = interactiveEl === document.activeElement;
 
 
     const interactiveEls = Array.from( document.querySelectorAll( 'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, [tabindex], [contenteditable]' ));
@@ -72,7 +72,7 @@ test( 'Ouverture de dialog', async t => {
   });
 
   t.same( ariaHidden, 'false', 'L’attribut « aria-hidden » du conteneur de la modale a la valeur « false ».' );
-  t.true( interactiveElIsFocused, 'Le focus clavier est positionné sur le premier élément interactif de la modale (hors bouton de fermeture).' );
+  t.true( interactiveElIsFocused, 'Le focus clavier est positionné sur le premier élément interactif de la modale.' );
   t.true( disabled, 'La totalité des éléments interactifs hors de la modale sont désactivés via « tabindex="-1" ».' );
   t.true( hidden, 'La totalité de la page en arrière-plan n’est plus lisible via « aria-hidden="true" ».' );
   t.true( role, 'dialog', 'Le conteneur de la modale doit avoir la valeur « dialog » pour l’attribut « role ».' );

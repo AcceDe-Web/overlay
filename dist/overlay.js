@@ -384,17 +384,11 @@
 
         // search for every focusable element in the layer
         Array.prototype.some.call(this.el.querySelectorAll(inert.focusables), function (el) {
-          var closeBtn = void 0;
-
-          if (_this2.el.closeBtns && _this2.el.closeBtns.indexOf(el) > -1) {
-            closeBtn = el;
-          }
-
           var height = el.offsetHeight;
           var bottom = el.offsetTop + height;
 
-          // test if focusable element is visible, not below the fold and not a close button
-          if (bottom <= screenHeight && (el.offsetWidth || el.offsetHeight) && !closeBtn) {
+          // test if focusable element is visible, not below the fold
+          if (bottom <= screenHeight && (el.offsetWidth || el.offsetHeight)) {
             _this2.el.firstInteractiveElement = el;
 
             return true;
@@ -407,22 +401,9 @@
           return;
         }
 
-        if (!this.el.firstInteractiveElement && this.el.closeBtns) {
-          var firstCloseButton = this.el.closeBtns[0];
-          var height = firstCloseButton.offsetHeight;
-          var bottom = firstCloseButton.offsetTop + height;
-
-          // fallback on the first close button if not below the fold
-          if (bottom <= screenHeight) {
-            this.el.firstInteractiveElement = firstCloseButton;
-
-            return;
-          }
-        }
-
         // search for every focusable element in the layer
         Array.prototype.some.call(this.el.querySelectorAll(textualElements), function (el) {
-          // test if focusable element is visible and not a close button
+          // test if focusable element is visible
           if (el.offsetWidth || el.offsetHeight) {
             el.setAttribute('tabindex', '-1');
 
