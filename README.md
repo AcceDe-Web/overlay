@@ -169,7 +169,7 @@ overlay.close();
 
 ## Polyfill
 
-In order to dispatch the `close` and `cancel` event, the script uses the `CustomEvent` constructor. A polyfill for `CustomEvent` is mandatory when the support of Internet Explorer is required. You can find the one on the [MDN website](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/CustomEvent#Polyfill).
+In order to dispatch the `close` and `cancel` event, the script uses the `CustomEvent` constructor. A polyfill for `CustomEvent` is mandatory when the support of Internet Explorer is required. You can find one on the [MDN website](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/CustomEvent#Polyfill).
 
 ## Compatibilty
 This plugin is tested against the following browsers:
