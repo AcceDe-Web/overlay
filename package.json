@@ -1,0 +1,63 @@
+{
+  "title": "AcceDe Web - overlay",
+  "name": "@accedeweb/overlay",
+  "version": "0.0.0",
+  "description": "WAI-ARIA overlay plugin based on AcceDe Web instructions",
+  "main": "dist/overlay.js",
+  "module": "lib/index.js",
+  "scripts": {
+    "test": "tape test/*.js | tap-diff",
+    "build": "rollup -c && cross-env NODE_ENV=production rollup -c",
+    "doc": "documentation build lib/index.js -f html -o docs --shallow",
+    "doc-lint": "documentation lint lib/index.js",
+    "doc-serve": "documentation serve",
+    "version": "npm run build && npm run test && git add -A dist",
+    "postversion": "git push && git push --tags",
+    "server": "browser-sync start -s 'test' --ss 'dist' -f 'test' 'dist' --no-open --no-ui --no-ghost-mode --no-notify",
+    "watch:build": "watch 'npm run build' lib --interval=1",
+    "watch:test": "watch 'npm test' {dist,test} --interval=1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:AcceDe-Web/overlay.git"
+  },
+  "keywords": [
+    "accessibility",
+    "modal",
+    "popin",
+    "dialog",
+    "layer",
+    "overlay",
+    "javascript",
+    "vanilla"
+  ],
+  "author": {
+    "name": "Switch",
+    "email": "bonjour@switch.paris",
+    "url": "http://switch.paris"
+  },
+  "license": "ISC",
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "IE 10"
+  ],
+  "homepage": "http://a11y.switch.paris/",
+  "devDependencies": {
+    "babel-plugin-external-helpers": "^6.22.0",
+    "babel-preset-env": "^1.7.0",
+    "browser-sync": "^2.18.13",
+    "cross-env": "^5.1.5",
+    "documentation": "^5.3.1",
+    "eslint": "^4.19.1",
+    "eslint-config-idiomatic": "^4.0.0",
+    "puppeteer": "^1.4.0",
+    "rollup": "^0.49.3",
+    "rollup-plugin-babel": "^3.0.2",
+    "rollup-plugin-replace": "^2.0.0",
+    "rollup-plugin-uglify": "^2.0.1",
+    "tap-diff": "^0.1.1",
+    "tape": "^4.8.0",
+    "watch": "^1.0.2"
+  }
+}

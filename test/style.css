@@ -1,0 +1,108 @@
+* {
+  font-family: inherit;
+  line-height: inherit;
+  color: inherit;
+}
+
+html{
+  font-family: sans-serif;
+  font-size: 100%;
+}
+
+input, textarea, keygen, select, button{
+  font-size: 100%;
+}
+
+figure{
+  display: inline-block;
+}
+
+figcaption{
+  text-align: center;
+}
+
+.actions{
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.actions li{
+  flex-grow: 1;
+  margin: 5px
+}
+
+.actions button{
+  display: block;
+  width: 100%;
+  height: 2.125rem;
+  border: 1px solid;
+  background: none;
+}
+
+fieldset > *{
+  display: block;
+}
+
+.modal-wrapper{
+  background-color: rgba( 0,0,0,0.3 );
+  box-sizing: border-box;
+  display: flex;
+  height: 100vh;
+  left: 0;
+  overflow: auto;
+  padding: 50px 20px;
+  position: fixed;
+  top: 0;
+  transition: background 0.01s cubic-bezier( 0.250,  0.460, 0.450, 0.940 );
+  width: 100%;
+}
+
+.modal{
+  background-color: #fff;
+  width: 50%;
+  max-width: 600px;
+  min-width: 300px;
+  padding: 20px;
+  margin: auto;
+  transition-property: transform, opacity;
+  transition-timing-function: cubic-bezier( 0.250,  0.460, 0.450, 0.940 );
+  transition-duration: 0.01s;
+}
+
+.modal-wrapper[aria-hidden="true"]{
+  display: none;
+  transition-timing-function: cubic-bezier( 0.550,  0.085, 0.680, 0.530 );
+}
+
+.modal-wrapper.closed .modal{
+  transform: translateY( 35% );
+  transition-timing-function: cubic-bezier( 0.550,  0.085, 0.680, 0.530 );
+  opacity: 0;
+}
+
+dialog{
+  display: none;
+  background: none;
+  border: 0;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  top: 0;
+}
+
+dialog::backdrop{
+  background: transparent;
+}
+
+dialog[open]{
+  display: flex;
+}
+/*
+.modal6 [data-label] {
+  display: none;
+}*/
