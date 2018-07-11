@@ -1,6 +1,6 @@
 /**
  * @accede-web/overlay - WAI-ARIA overlay plugin based on AcceDe Web instructions
- * @version v1.0.0
+ * @version v1.0.1
  * @link http://a11y.switch.paris/
  * @license ISC
  **/
@@ -142,6 +142,7 @@
 
   var layerIndex = 0;
   var layerStack = [];
+  var activeElement = void 0;
 
   var cancelListener = function cancelListener(event) {
     if (!layerStack.length || event.keyCode !== 27) {
@@ -151,6 +152,12 @@
     var topModal = layerStack[0].layer;
 
     topModal._dispatchEvent('cancel');
+  };
+
+  var getActiveElement = function getActiveElement(event) {
+    if (event.target !== document.body) {
+      activeElement = event.target;
+    }
   };
 
   var Overlay = function () {
@@ -594,7 +601,7 @@
         // bind eventListeners to the layer
         this._bind();
         // store the current focused element before focusing the layer
-        this.options.opener = this.options.opener || document.activeElement;
+        this.options.opener = this.options.opener || activeElement;
         // IE can't focus a svg element
         if (this.options.opener.nodeName === 'svg') {
           this.options.opener = this.options.opener.parentNode;
@@ -667,6 +674,7 @@
 
 
   document.body.addEventListener('keydown', cancelListener);
+  document.body.addEventListener('focus', getActiveElement, true);
 
   return Overlay;
 
