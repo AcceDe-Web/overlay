@@ -1,6 +1,6 @@
 /**
  * @accede-web/overlay - WAI-ARIA overlay plugin based on AcceDe Web instructions
- * @version v1.0.1
+ * @version v1.0.2
  * @link http://a11y.switch.paris/
  * @license ISC
  **/
@@ -601,7 +601,8 @@
         // bind eventListeners to the layer
         this._bind();
         // store the current focused element before focusing the layer
-        this.options.opener = this.options.opener || activeElement;
+        this.options.opener = this.options.opener || activeElement || document.activeElement;
+
         // IE can't focus a svg element
         if (this.options.opener.nodeName === 'svg') {
           this.options.opener = this.options.opener.parentNode;
