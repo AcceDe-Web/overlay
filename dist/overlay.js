@@ -160,6 +160,13 @@
     }
   };
 
+  /**
+   * Overlay constructor
+   * @constructor
+   * @param {Node|Object} el - DOM node or options
+   * @param {Object} [options] - options
+   */
+
   var Overlay = function () {
     _createClass(Overlay, [{
       key: 'addEventListener',
@@ -475,7 +482,6 @@
       }
       /**
        * Handle layer close behaviour
-       * @param {Object} event DOM event object or object with a type property.
        */
 
     }, {
