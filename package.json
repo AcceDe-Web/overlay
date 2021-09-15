@@ -13,7 +13,7 @@
     "doc-serve": "documentation serve lib/index.js",
     "version": "npm run build && npm run test && git add -A dist",
     "postversion": "git push && git push --tags",
-    "server": "browser-sync start -s 'test' --ss 'dist' -f 'test' 'dist' --no-open --no-ui --no-ghost-mode --no-notify",
+    "server": "browser-sync start -s 'test' 'dist' --ss 'dist' -f 'test' 'dist' --no-open --no-ui --no-ghost-mode --no-notify",
     "watch:build": "watch 'npm run build' lib --interval=1",
     "watch:test": "watch 'npm test' {dist,test} --interval=1"
   },
