@@ -1,7 +1,7 @@
 {
   "title": "AcceDe Web - overlay",
   "name": "@accede-web/overlay",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "WAI-ARIA overlay plugin based on AcceDe Web instructions",
   "main": "dist/overlay.js",
   "module": "lib/index.js",
