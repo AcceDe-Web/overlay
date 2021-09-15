@@ -193,3 +193,13 @@ Run the automated test cases:
 ```bash
   $ npm test
 ```
+
+## Development
+
+To test locally, you can run:
+
+```bash
+  $ npm run server
+```
+
+And then go to [http://localhost:3000/test](http://localhost:3000/test)
