@@ -51,7 +51,7 @@ Contrary to the instance's properties, the static properties are available on th
 
 ### HTML
 ```html
-<!-- content to be insterted in an overlay -->
+<!-- content to be inserted in an overlay -->
 <section class="overlay">
   <header class="layer-header">
     <button class="button-close">
