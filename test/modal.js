@@ -22,7 +22,7 @@ test( 'Ouverture de modale', async t => {
   const [ browser, page ] = await createBrowser();
 
   await page.click( '[data-open=".modal1"]' );
-  await page.waitFor( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
+  await page.waitForSelector( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
 
   const [ ariaHidden, interactiveElIsFocused, disabled, hidden ] = await page.evaluate(() => {
     const modal = document.querySelector( '.modal-wrapper' );
@@ -97,7 +97,7 @@ test( 'Fermeture de modale (Echap)', async t => {
   const message = 'La touche « Echap » permet de fermer la modale.';
 
   await page.click( '[data-open=".modal2"]' );
-  await page.waitFor( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
+  await page.waitForSelector( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
 
   await page.evaluate(() => {
     window.callbacks = {};
@@ -115,7 +115,7 @@ test( 'Fermeture de modale (Echap)', async t => {
 
   await page.keyboard.press( 'Escape' );
 
-  await page.waitFor( '.modal-wrapper[aria-hidden="true"]', waitForOptions )
+  await page.waitForSelector( '.modal-wrapper[aria-hidden="true"]', waitForOptions )
     .then(() => {
       t.pass( message );
     })
@@ -140,7 +140,7 @@ test( 'Fermeture de modale (click extérieur)', async t => {
   const message = 'Un clic en dehors du contenu de la modale ferme la modale.';
 
   await page.click( '[data-open=".modal2"]' );
-  await page.waitFor( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
+  await page.waitForSelector( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
 
   await page.evaluate(() => {
     window.callbacks = {};
@@ -158,7 +158,7 @@ test( 'Fermeture de modale (click extérieur)', async t => {
 
   await page.mouse.click( 5, 5 );
 
-  await page.waitFor( '.modal-wrapper[aria-hidden="true"]', waitForOptions )
+  await page.waitForSelector( '.modal-wrapper[aria-hidden="true"]', waitForOptions )
     .then(() => {
       t.pass( message );
     })
@@ -184,7 +184,7 @@ test( 'Fermeture de modale (bouton de fermeture)', async t => {
   const message = 'Un clic sur un bouton de fermeture ferme la modale.';
 
   await page.click( '[data-open=".modal2"]' );
-  await page.waitFor( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
+  await page.waitForSelector( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
 
   await page.evaluate(() => {
     window.callbacks = {};
@@ -202,7 +202,7 @@ test( 'Fermeture de modale (bouton de fermeture)', async t => {
 
   await page.click( '.modal-wrapper .close' );
 
-  await page.waitFor( '.modal-wrapper[aria-hidden="true"]', waitForOptions )
+  await page.waitForSelector( '.modal-wrapper[aria-hidden="true"]', waitForOptions )
     .then(() => {
       t.pass( message );
     })
@@ -227,9 +227,9 @@ test( 'Fermeture de modale (click intérieur)', async t => {
   const [ browser, page ] = await createBrowser();
 
   await page.click( '[data-open=".modal2"]' );
-  await page.waitFor( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
+  await page.waitForSelector( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
   await page.click( '.modal-wrapper .modal.modal2' );
-  await page.waitFor( 50 );
+  await page.waitForTimeout( 50 );
 
   const opened = await page .evaluate(() => {
     let modal = document.querySelector( '.modal-wrapper' );
@@ -257,9 +257,9 @@ test( 'Fermeture de modale', async t => {
   });
 
   await page.click( '[data-open=".modal2"]' );
-  await page.waitFor( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
+  await page.waitForSelector( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
   await page.keyboard.press( 'Escape' );
-  await page.waitFor( '.modal-wrapper[aria-hidden="true"]', waitForOptions );
+  await page.waitForSelector( '.modal-wrapper[aria-hidden="true"]', waitForOptions );
 
   const [ enabled, visible, hidden, focused ] = await page .evaluate(() => {
     const enabled = window.interactiveEls.every( el => {
@@ -304,7 +304,7 @@ test( 'Callbacks', async t => {
   const [ browser, page ] = await createBrowser();
 
   await page.click( '[data-open=".modal1"]' );
-  await page.waitFor( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
+  await page.waitForSelector( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
 
   await page.evaluate(() => {
     window.callbacks = {};

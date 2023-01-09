@@ -22,7 +22,7 @@ test( 'Ouverture de dialog', async t => {
   const [ browser, page ] = await createBrowser();
 
   await page.click( '[data-open=".modal4"]' );
-  await page.waitFor( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
+  await page.waitForSelector( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
 
   const [ ariaHidden, interactiveElIsFocused, disabled, hidden, role, labelMatch ] = await page.evaluate(() => {
     const modal = document.querySelector( '.modal-wrapper' );
@@ -87,7 +87,7 @@ test( 'Ouverture de dialog (sans éléments interactifs autre que le bouton de f
   const [ browser, page ] = await createBrowser();
 
   await page.click( '[data-open=".modal6"]' );
-  await page.waitFor( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
+  await page.waitForSelector( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
 
   const interactiveElIsFocused = await page.evaluate(() => {
     var interactiveEl = document.querySelector( '.modal-wrapper .close' );
@@ -107,7 +107,7 @@ test( 'Ouverture de dialog (sans éléments interactifs)', async t => {
   const [ browser, page ] = await createBrowser();
 
   await page.click( '[data-open=".modal9"]' );
-  await page.waitFor( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
+  await page.waitForSelector( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
 
   const [ titleIsFocused, hasTabindex ] = await page.evaluate(() => {
     var el = document.querySelector( '.modal-wrapper h2' );
@@ -131,7 +131,7 @@ test( 'Ouverture de dialog (sans titre visible)', async t => {
   const [ browser, page ] = await createBrowser();
 
   await page.click( '[data-open=".modal7"]' );
-  await page.waitFor( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
+  await page.waitForSelector( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
 
   const ariaLabel = await page.evaluate(() => {
     const modalOpener = document.querySelector( '[data-open=".modal7"]' );
@@ -194,10 +194,10 @@ test( 'Fermeture de dialog (Echap)', async t => {
   const message = 'La touche « Echap » permet de fermer la modale.';
 
   await page.click( '[data-open=".modal4"]' );
-  await page.waitFor( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
+  await page.waitForSelector( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
   await page.keyboard.press( 'Escape' );
 
-  page.waitFor( '.modal-wrapper[aria-hidden="true"]', waitForOptions )
+  page.waitForSelector( '.modal-wrapper[aria-hidden="true"]', waitForOptions )
     .then(() => {
       t.pass( message );
     })
@@ -216,10 +216,10 @@ test( 'Fermeture de dialog (click extérieur)', async t => {
   const message = 'Un clic en dehors du contenu de la modale ferme la modale.';
 
   await page.click( '[data-open=".modal4"]' );
-  await page.waitFor( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
+  await page.waitForSelector( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
   await page.mouse.click( 5, 5 );
 
-  page.waitFor( '.modal-wrapper[aria-hidden="true"]', waitForOptions )
+  page.waitForSelector( '.modal-wrapper[aria-hidden="true"]', waitForOptions )
     .then(() => {
       t.pass( message );
     })
@@ -238,10 +238,10 @@ test( 'Fermeture de dialog (bouton de fermeture)', async t => {
   const message = 'Un clic sur un bouton de fermeture ferme la modale.';
 
   await page.click( '[data-open=".modal4"]' );
-  await page.waitFor( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
+  await page.waitForSelector( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
   await page.click( '.modal-wrapper .close' );
 
-  page.waitFor( '.modal-wrapper[aria-hidden="true"]', waitForOptions )
+  page.waitForSelector( '.modal-wrapper[aria-hidden="true"]', waitForOptions )
     .then(() => {
       t.pass( message );
     })
@@ -260,7 +260,7 @@ test( 'Fermeture de dialog (click intérieur)', async t => {
   const [ browser, page ] = await createBrowser();
 
   await page.click( '[data-open=".modal4"]' );
-  await page.waitFor( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
+  await page.waitForSelector( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
   await page.click( '.modal-wrapper .modal.modal4' );
 
   const opened = await page .evaluate(() => {
@@ -289,9 +289,9 @@ test( 'Fermeture de dialog', async t => {
   });
 
   await page.click( '[data-open=".modal4"]' );
-  await page.waitFor( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
+  await page.waitForSelector( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
   await page.keyboard.press( 'Escape' );
-  await page.waitFor( '.modal-wrapper[aria-hidden="true"]', waitForOptions )
+  await page.waitForSelector( '.modal-wrapper[aria-hidden="true"]', waitForOptions )
     .catch(() => {});
 
   const [ enabled, visible, hidden, focused ] = await page .evaluate(() => {
@@ -336,9 +336,9 @@ test( 'Fermeture de alertdialog (Echap)', async t => {
   const [ browser, page ] = await createBrowser();
 
   await page.click( '[data-open=".modal10"]' );
-  await page.waitFor( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
+  await page.waitForSelector( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
   await page.keyboard.press( 'Escape' );
-  await page.waitFor( 50 );
+  await page.waitForTimeout( 50 );
 
   const closed = await page .evaluate(() => {
     let modal = document.querySelector( '.modal-wrapper' );
@@ -357,9 +357,9 @@ test( 'Fermeture de alertdialog (click extérieur)', async t => {
   const [ browser, page ] = await createBrowser();
 
   await page.click( '[data-open=".modal10"]' );
-  await page.waitFor( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
+  await page.waitForSelector( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
   await page.mouse.click( 5, 5 );
-  await page.waitFor( 50 );
+  await page.waitForTimeout( 50 );
 
   const closed = await page.evaluate(() => {
     let modal = document.querySelector( '.modal-wrapper' );
@@ -379,10 +379,10 @@ test( 'Fermeture de alertdialog (bouton de fermeture)', async t => {
   const message = 'Un clic sur un bouton de fermeture ferme la modale « alertdialog ».';
 
   await page.click( '[data-open=".modal10"]' );
-  await page.waitFor( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
+  await page.waitForSelector( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
   await page.click( '.modal-wrapper .close' );
 
-  page.waitFor( '.modal-wrapper[aria-hidden="true"]', waitForOptions )
+  page.waitForSelector( '.modal-wrapper[aria-hidden="true"]', waitForOptions )
     .then(() => {
       t.pass( message );
     })
@@ -400,9 +400,9 @@ test( 'Fermeture de alertdialog (click intérieur)', async t => {
   const [ browser, page ] = await createBrowser();
 
   await page.click( '[data-open=".modal10"]' );
-  await page.waitFor( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
+  await page.waitForSelector( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
   await page.click( '.modal-wrapper .modal.modal10' );
-  await page.waitFor( 50 );
+  await page.waitForTimeout( 50 );
 
   const opened = await page .evaluate(() => {
     let modal = document.querySelector( '.modal-wrapper' );

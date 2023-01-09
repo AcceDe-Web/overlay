@@ -53,7 +53,7 @@
     "documentation": "^12.2.0",
     "eslint": "^4.19.1",
     "eslint-config-idiomatic": "^4.0.0",
-    "puppeteer": "^1.20.0",
+    "puppeteer": "^19.5.0",
     "rollup": "^0.57.1",
     "rollup-plugin-babel": "^3.0.7",
     "rollup-plugin-replace": "^2.2.0",
