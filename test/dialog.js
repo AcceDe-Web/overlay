@@ -88,6 +88,7 @@ test( 'Ouverture de dialog (sans éléments interactifs autre que le bouton de f
 
   await page.click( '[data-open=".modal6"]' );
   await page.waitForSelector( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
+  await page.waitForTimeout( 16 );
 
   const interactiveElIsFocused = await page.evaluate(() => {
     var interactiveEl = document.querySelector( '.modal-wrapper .close' );
@@ -108,6 +109,7 @@ test( 'Ouverture de dialog (sans éléments interactifs)', async t => {
 
   await page.click( '[data-open=".modal9"]' );
   await page.waitForSelector( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
+  await page.waitForTimeout( 16 );
 
   const [ titleIsFocused, hasTabindex ] = await page.evaluate(() => {
     var el = document.querySelector( '.modal-wrapper h2' );
@@ -171,6 +173,8 @@ test( 'Position du focus', async t => {
 
   await page.click( '[data-open=".modal10"]' );
 
+  await page.waitForTimeout( 16 );
+
   const [ titleIsFocused, hasTabindex ] = await page.evaluate(() => {
     var el = document.querySelector( '.modal-wrapper h2' );
 
@@ -197,18 +201,15 @@ test( 'Fermeture de dialog (Echap)', async t => {
   await page.waitForSelector( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
   await page.keyboard.press( 'Escape' );
 
-  page.waitForSelector( '.modal-wrapper[aria-hidden="true"]', waitForOptions )
+  await page.waitForSelector( '.modal-wrapper[aria-hidden="true"]', waitForOptions )
     .then(() => {
       t.pass( message );
     })
     .catch(() => {
       t.fail( message );
-    })
-    .then( async () => {
-      await browser.close();
-
-      t.end();
     });
+
+  await browser.close();
 });
 
 test( 'Fermeture de dialog (click extérieur)', async t => {
@@ -219,18 +220,15 @@ test( 'Fermeture de dialog (click extérieur)', async t => {
   await page.waitForSelector( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
   await page.mouse.click( 5, 5 );
 
-  page.waitForSelector( '.modal-wrapper[aria-hidden="true"]', waitForOptions )
+  await page.waitForSelector( '.modal-wrapper[aria-hidden="true"]', waitForOptions )
     .then(() => {
       t.pass( message );
     })
     .catch(() => {
       t.fail( message );
-    })
-    .then( async () => {
-      await browser.close();
-
-      t.end();
     });
+
+  await browser.close();
 });
 
 test( 'Fermeture de dialog (bouton de fermeture)', async t => {
@@ -241,18 +239,15 @@ test( 'Fermeture de dialog (bouton de fermeture)', async t => {
   await page.waitForSelector( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
   await page.click( '.modal-wrapper .close' );
 
-  page.waitForSelector( '.modal-wrapper[aria-hidden="true"]', waitForOptions )
+  await page.waitForSelector( '.modal-wrapper[aria-hidden="true"]', waitForOptions )
     .then(() => {
       t.pass( message );
     })
     .catch(() => {
       t.fail( message );
-    })
-    .then( async () => {
-      await browser.close();
-
-      t.end();
     });
+
+  await browser.close();
 });
 
 
@@ -382,18 +377,15 @@ test( 'Fermeture de alertdialog (bouton de fermeture)', async t => {
   await page.waitForSelector( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
   await page.click( '.modal-wrapper .close' );
 
-  page.waitForSelector( '.modal-wrapper[aria-hidden="true"]', waitForOptions )
+  await page.waitForSelector( '.modal-wrapper[aria-hidden="true"]', waitForOptions )
     .then(() => {
       t.pass( message );
     })
     .catch(() => {
       t.fail( message );
-    })
-    .then( async () => {
-      await browser.close();
-
-      t.end();
     });
+
+  await browser.close();
 });
 
 test( 'Fermeture de alertdialog (click intérieur)', async t => {

@@ -77,6 +77,7 @@ test( 'Ouverture de modale (sans éléments interactifs)', async t => {
   const [ browser, page ] = await createBrowser();
 
   await page.click( '[data-open=".modal2"]' );
+  await page.waitForTimeout( 16 );
 
   const interactiveElIsFocused = await page.evaluate(() => {
     var interactiveEl = document.querySelector( '.modal-wrapper .close' );
