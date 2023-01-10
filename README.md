@@ -24,6 +24,7 @@ $ npm install @accede-web/overlay
 |-----------------------|-------------|
 | `show()`                                   | Switch the `aria-hidden` attribute to `false` and disable the rest of the document (if the `modal` parameter is not set to `false`) |
 | `close( returnValue )`                     | Switch the `aria-hidden` attribute to `true` and enable the rest of the document if needed. Dispatch `close` event on the overlay. Also available on the root element of the overlay. The `returnValue` property can be sent invoking this method |
+| `reset()`                                  | After passing a formatted overlay to the constructor, the `.reset()` method can be called when the overlay is closed to put back the element to it's original place |
 | `addEventListener(eventName, callback)`    | Shortcut to listen to the `close` or `cancel` events |
 | `removeEventListener(eventName, callback)` | Shortcut to stop listening to the `close` or `cancel` events |
 
@@ -112,7 +113,7 @@ overlay.close( 'returnValueData' );
 | `titleSelector` | `String`      | Mandatory when using a `role` attribute and no `label` property, a CSS selector matching the title the overlay should have. Defaults to `[data-label]` |
 | `label`         | `String`      | Mandatory when using a `role` attribute and there's no title displayed in the overlay to specify the title of the overlay |
 
-## Passing the formated overlay
+## Passing the formatted element
 
 In this case the overlay is a valid and accessible HTML structure passed to the script. The script is used to handle the events and to disable the document.
 

@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="zxx">
   <head>
-    <link rel="stylesheet" href="./style.css" />
+    <title>Test page</title>
+    <link rel="stylesheet" href="./style.css">
   </head>
   <body>
     <div class="site-wrapper">
@@ -19,7 +20,7 @@
           <button tabindex="-2">Bouton avec tabindex négatif différent de -1</button>
         </li>
         <li>
-          <button tabindex=" -1">Bouton avec tabindex à -1</button>
+          <button tabindex="-1">Bouton avec tabindex à -1</button>
         </li>
         <li>
           <button class="test" data-open=".modal4" data-role="dialog">Modale avec un role dialog</button>
@@ -38,6 +39,12 @@
         </li>
         <li>
           <button data-open=".modal10" data-role="alertdialog">Modale avec un role alertdialog</button>
+        </li>
+        <li>
+          <button data-open=".modal11" data-el>Modale avec struture prête</button>
+        </li>
+        <li>
+          <button data-open=".modal12" data-el>Modale avec struture prête et aria-hidden à true</button>
         </li>
         <li>
           <button disabled>Bouton désactivé</button>
@@ -97,22 +104,21 @@
             <legend>Formulaire</legend>
             <label>
               <span>input 1</span>
-              <input/>
+              <input>
             </label>
             <label>
               <span>input 2</span>
-              <input/>
+              <input>
             </label>
             <label>
               <span>input 3</span>
-              <input/>
+              <input>
             </label>
           </fieldset>
         </form>
         <button>1</button>
         <button>2</button>
       </div>
-    </div>
 
     <!-- <dialog class="modal4"> -->
       <div class="modal modal4">
@@ -133,15 +139,15 @@
             <legend>Formulaire</legend>
             <label>
               <span>input 1</span>
-              <input name="firstName" />
+              <input name="firstName" >
             </label>
             <label>
               <span>input 2</span>
-              <input/>
+              <input>
             </label>
             <label>
               <span>input 3</span>
-              <input/>
+              <input>
             </label>
           </fieldset>
         </form>
@@ -158,71 +164,94 @@
       </div>
     <!-- </dialog> -->
 
-    <div class="modal modal7">
-      <button class="close">Close</button>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates alias consequatur iusto odit quod quia, maiores, accusantium pariatur, dolores accusamus rerum ad, dolorum atque earum. Itaque dolorum dolores consequuntur laboriosam.</p>
-    </div>
+      <div class="modal modal7">
+        <button class="close">Close</button>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates alias consequatur iusto odit quod quia, maiores, accusantium pariatur, dolores accusamus rerum ad, dolorum atque earum. Itaque dolorum dolores consequuntur laboriosam.</p>
+      </div>
 
-    <div class="modal modal8">
-      <button class="close">Close</button>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates alias consequatur iusto odit quod quia, maiores, accusantium pariatur, dolores accusamus rerum ad, dolorum atque earum. Itaque dolorum dolores consequuntur laboriosam.</p>
-    </div>
+      <div class="modal modal8">
+        <button class="close">Close</button>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates alias consequatur iusto odit quod quia, maiores, accusantium pariatur, dolores accusamus rerum ad, dolorum atque earum. Itaque dolorum dolores consequuntur laboriosam.</p>
+      </div>
 
-    <div class="modal modal9">
-      <h2 data-label>Modal 9</h2>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates alias consequatur iusto odit quod quia, maiores, accusantium pariatur, dolores accusamus rerum ad, dolorum atque earum. Itaque dolorum dolores consequuntur laboriosam.</p>
-    </div>
+      <div class="modal modal9">
+        <h2 data-label>Modal 9</h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates alias consequatur iusto odit quod quia, maiores, accusantium pariatur, dolores accusamus rerum ad, dolorum atque earum. Itaque dolorum dolores consequuntur laboriosam.</p>
+      </div>
 
-    <div class="modal modal10">
-      <h2 data-label>Modal 10</h2>
-      <p data-description>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates alias consequatur iusto odit quod quia, maiores, accusantium pariatur, dolores accusamus rerum ad, dolorum atque earum. Itaque dolorum dolores consequuntur laboriosam.</p>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates alias consequatur iusto odit quod quia, maiores, accusantium pariatur, dolores accusamus rerum ad, dolorum atque earum. Itaque dolorum dolores consequuntur laboriosam.</p>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates alias consequatur iusto odit quod quia, maiores, accusantium pariatur, dolores accusamus rerum ad, dolorum atque earum. Itaque dolorum dolores consequuntur laboriosam.</p>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates alias consequatur iusto odit quod quia, maiores, accusantium pariatur, dolores accusamus rerum ad, dolorum atque earum. Itaque dolorum dolores consequuntur laboriosam.</p>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates alias consequatur iusto odit quod quia, maiores, accusantium pariatur, dolores accusamus rerum ad, dolorum atque earum. Itaque dolorum dolores consequuntur laboriosam.</p>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates alias consequatur iusto odit quod quia, maiores, accusantium pariatur, dolores accusamus rerum ad, dolorum atque earum. Itaque dolorum dolores consequuntur laboriosam.</p>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates alias consequatur iusto odit quod quia, maiores, accusantium pariatur, dolores accusamus rerum ad, dolorum atque earum. Itaque dolorum dolores consequuntur laboriosam.</p>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates alias consequatur iusto odit quod quia, maiores, accusantium pariatur, dolores accusamus rerum ad, dolorum atque earum. Itaque dolorum dolores consequuntur laboriosam.</p>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates alias consequatur iusto odit quod quia, maiores, accusantium pariatur, dolores accusamus rerum ad, dolorum atque earum. Itaque dolorum dolores consequuntur laboriosam.</p>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates alias consequatur iusto odit quod quia, maiores, accusantium pariatur, dolores accusamus rerum ad, dolorum atque earum. Itaque dolorum dolores consequuntur laboriosam.</p>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates alias consequatur iusto odit quod quia, maiores, accusantium pariatur, dolores accusamus rerum ad, dolorum atque earum. Itaque dolorum dolores consequuntur laboriosam.</p>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates alias consequatur iusto odit quod quia, maiores, accusantium pariatur, dolores accusamus rerum ad, dolorum atque earum. Itaque dolorum dolores consequuntur laboriosam.</p>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates alias consequatur iusto odit quod quia, maiores, accusantium pariatur, dolores accusamus rerum ad, dolorum atque earum. Itaque dolorum dolores consequuntur laboriosam.</p>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates alias consequatur iusto odit quod quia, maiores, accusantium pariatur, dolores accusamus rerum ad, dolorum atque earum. Itaque dolorum dolores consequuntur laboriosam.</p>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates alias consequatur iusto odit quod quia, maiores, accusantium pariatur, dolores accusamus rerum ad, dolorum atque earum. Itaque dolorum dolores consequuntur laboriosam.</p>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates alias consequatur iusto odit quod quia, maiores, accusantium pariatur, dolores accusamus rerum ad, dolorum atque earum. Itaque dolorum dolores consequuntur laboriosam.</p>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates alias consequatur iusto odit quod quia, maiores, accusantium pariatur, dolores accusamus rerum ad, dolorum atque earum. Itaque dolorum dolores consequuntur laboriosam.</p>
-      <button class="close">Ok</button>
+      <div class="modal modal10">
+        <h2 data-label>Modal 10</h2>
+        <p data-description>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates alias consequatur iusto odit quod quia, maiores, accusantium pariatur, dolores accusamus rerum ad, dolorum atque earum. Itaque dolorum dolores consequuntur laboriosam.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates alias consequatur iusto odit quod quia, maiores, accusantium pariatur, dolores accusamus rerum ad, dolorum atque earum. Itaque dolorum dolores consequuntur laboriosam.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates alias consequatur iusto odit quod quia, maiores, accusantium pariatur, dolores accusamus rerum ad, dolorum atque earum. Itaque dolorum dolores consequuntur laboriosam.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates alias consequatur iusto odit quod quia, maiores, accusantium pariatur, dolores accusamus rerum ad, dolorum atque earum. Itaque dolorum dolores consequuntur laboriosam.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates alias consequatur iusto odit quod quia, maiores, accusantium pariatur, dolores accusamus rerum ad, dolorum atque earum. Itaque dolorum dolores consequuntur laboriosam.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates alias consequatur iusto odit quod quia, maiores, accusantium pariatur, dolores accusamus rerum ad, dolorum atque earum. Itaque dolorum dolores consequuntur laboriosam.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates alias consequatur iusto odit quod quia, maiores, accusantium pariatur, dolores accusamus rerum ad, dolorum atque earum. Itaque dolorum dolores consequuntur laboriosam.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates alias consequatur iusto odit quod quia, maiores, accusantium pariatur, dolores accusamus rerum ad, dolorum atque earum. Itaque dolorum dolores consequuntur laboriosam.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates alias consequatur iusto odit quod quia, maiores, accusantium pariatur, dolores accusamus rerum ad, dolorum atque earum. Itaque dolorum dolores consequuntur laboriosam.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates alias consequatur iusto odit quod quia, maiores, accusantium pariatur, dolores accusamus rerum ad, dolorum atque earum. Itaque dolorum dolores consequuntur laboriosam.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates alias consequatur iusto odit quod quia, maiores, accusantium pariatur, dolores accusamus rerum ad, dolorum atque earum. Itaque dolorum dolores consequuntur laboriosam.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates alias consequatur iusto odit quod quia, maiores, accusantium pariatur, dolores accusamus rerum ad, dolorum atque earum. Itaque dolorum dolores consequuntur laboriosam.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates alias consequatur iusto odit quod quia, maiores, accusantium pariatur, dolores accusamus rerum ad, dolorum atque earum. Itaque dolorum dolores consequuntur laboriosam.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates alias consequatur iusto odit quod quia, maiores, accusantium pariatur, dolores accusamus rerum ad, dolorum atque earum. Itaque dolorum dolores consequuntur laboriosam.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates alias consequatur iusto odit quod quia, maiores, accusantium pariatur, dolores accusamus rerum ad, dolorum atque earum. Itaque dolorum dolores consequuntur laboriosam.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates alias consequatur iusto odit quod quia, maiores, accusantium pariatur, dolores accusamus rerum ad, dolorum atque earum. Itaque dolorum dolores consequuntur laboriosam.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates alias consequatur iusto odit quod quia, maiores, accusantium pariatur, dolores accusamus rerum ad, dolorum atque earum. Itaque dolorum dolores consequuntur laboriosam.</p>
+        <button class="close">Ok</button>
+      </div>
+
+      <section class="modal-wrapper modal11" role="dialog" aria-labelledby="label11">
+        <div class="modal" >
+          <button class="close">Close</button>
+          <h2 id="label11">Modal 11</h2>
+          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates alias consequatur iusto odit quod quia, maiores, accusantium pariatur, dolores accusamus rerum ad, dolorum atque earum. Itaque dolorum dolores consequuntur laboriosam.</p>
+          <button data-open=".modal5" data-role="dialog">To modal 5</button>
+        </div>
+      </section>
+
+      <section class="modal-wrapper modal12" role="dialog" aria-labelledby="label12" aria-hidden="true">
+        <div class="modal" >
+          <button class="close">Close</button>
+          <h2 id="label12">Modal 12</h2>
+          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates alias consequatur iusto odit quod quia, maiores, accusantium pariatur, dolores accusamus rerum ad, dolorum atque earum. Itaque dolorum dolores consequuntur laboriosam.</p>
+          <button data-open=".modal5" data-role="dialog">To modal 5</button>
+        </div>
+      </section>
     </div>
 
     <script src="../dist/overlay.js"></script>
     <script>
-      //function transitionEnd( e ){
-      //  var modal = e.target.closest( '[aria-hidden]' );
-      //  if( e.propertyName === 'transform' ){
-      //    modal.removeEventListener( 'transitionend', transitionEnd );
-      //    modal.removeAttribute( 'style' );
-      //  }
-      //}
-
       function handleEvent( e ){
         var btn = e.target,
             selector = e.target.getAttribute( 'data-open' ),
-            modal = document.querySelector( selector );
+            modal = document.querySelector( selector ),
+            el = e.target.hasAttribute('data-el');
 
         if( !btn.modal ){
-          btn.modal = new window.Overlay( {
-            opener: btn,
-            content: modal,
-            tagName: 'section',
-            className: 'modal-wrapper',
-            closeSelector: '.close',
-            role: btn.getAttribute( 'data-role' ),
-            label: btn.getAttribute( 'data-label' )
-          });
+          if(el){
+            btn.modal = new window.Overlay(modal, {
+              opener: btn,
+              closeSelector: '.close',
+            })
+          } else {
+            btn.modal = new window.Overlay( {
+              opener: btn,
+              content: modal,
+              tagName: 'section',
+              className: 'modal-wrapper',
+              closeSelector: '.close',
+              role: btn.getAttribute( 'data-role' ),
+              label: btn.getAttribute( 'data-label' )
+            });
+          }
 
           btn.modal.addEventListener( 'close', e => {
             console.log( e.type, e.target );
+
+            if(el){
+              btn.modal.reset();
+            }
           });
 
           btn.modal.addEventListener( 'cancel', e => {

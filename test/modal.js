@@ -15,19 +15,20 @@ const createBrowser = async () => {
 };
 
 const waitForOptions = {
-  timeout: 5000
+  timeout: 1000
 };
 
 test( 'Ouverture de modale', async t => {
   const [ browser, page ] = await createBrowser();
 
   await page.click( '[data-open=".modal1"]' );
-  await page.waitForSelector( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
+  await page.waitForSelector( 'body > .modal-wrapper[aria-hidden="false"]', waitForOptions );
+  await page.waitForTimeout( 16 );
 
   const [ ariaHidden, interactiveElIsFocused, disabled, hidden ] = await page.evaluate(() => {
-    const modal = document.querySelector( '.modal-wrapper' );
+    const modal = document.querySelector( 'body > .modal-wrapper' );
 
-    const interactiveEl = document.querySelector( '.modal-wrapper button' );
+    const interactiveEl = document.querySelector( 'body > .modal-wrapper button' );
     // skip the first button which is the close button
     const interactiveElIsFocused = interactiveEl === document.activeElement;
 
@@ -80,7 +81,7 @@ test( 'Ouverture de modale (sans éléments interactifs)', async t => {
   await page.waitForTimeout( 16 );
 
   const interactiveElIsFocused = await page.evaluate(() => {
-    var interactiveEl = document.querySelector( '.modal-wrapper .close' );
+    var interactiveEl = document.querySelector( 'body > .modal-wrapper .close' );
 
     // skip the first button which is the close button
     return interactiveEl === document.activeElement;
@@ -98,7 +99,7 @@ test( 'Fermeture de modale (Echap)', async t => {
   const message = 'La touche « Echap » permet de fermer la modale.';
 
   await page.click( '[data-open=".modal2"]' );
-  await page.waitForSelector( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
+  await page.waitForSelector( 'body > .modal-wrapper[aria-hidden="false"]', waitForOptions );
 
   await page.evaluate(() => {
     window.callbacks = {};
@@ -116,7 +117,7 @@ test( 'Fermeture de modale (Echap)', async t => {
 
   await page.keyboard.press( 'Escape' );
 
-  await page.waitForSelector( '.modal-wrapper[aria-hidden="true"]', waitForOptions )
+  await page.waitForSelector( 'body > .modal-wrapper[aria-hidden="true"]', waitForOptions )
     .then(() => {
       t.pass( message );
     })
@@ -141,7 +142,7 @@ test( 'Fermeture de modale (click extérieur)', async t => {
   const message = 'Un clic en dehors du contenu de la modale ferme la modale.';
 
   await page.click( '[data-open=".modal2"]' );
-  await page.waitForSelector( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
+  await page.waitForSelector( 'body > .modal-wrapper[aria-hidden="false"]', waitForOptions );
 
   await page.evaluate(() => {
     window.callbacks = {};
@@ -159,7 +160,7 @@ test( 'Fermeture de modale (click extérieur)', async t => {
 
   await page.mouse.click( 5, 5 );
 
-  await page.waitForSelector( '.modal-wrapper[aria-hidden="true"]', waitForOptions )
+  await page.waitForSelector( 'body > .modal-wrapper[aria-hidden="true"]', waitForOptions )
     .then(() => {
       t.pass( message );
     })
@@ -185,7 +186,7 @@ test( 'Fermeture de modale (bouton de fermeture)', async t => {
   const message = 'Un clic sur un bouton de fermeture ferme la modale.';
 
   await page.click( '[data-open=".modal2"]' );
-  await page.waitForSelector( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
+  await page.waitForSelector( 'body > .modal-wrapper[aria-hidden="false"]', waitForOptions );
 
   await page.evaluate(() => {
     window.callbacks = {};
@@ -201,9 +202,9 @@ test( 'Fermeture de modale (bouton de fermeture)', async t => {
     });
   });
 
-  await page.click( '.modal-wrapper .close' );
+  await page.click( 'body > .modal-wrapper .close' );
 
-  await page.waitForSelector( '.modal-wrapper[aria-hidden="true"]', waitForOptions )
+  await page.waitForSelector( 'body > .modal-wrapper[aria-hidden="true"]', waitForOptions )
     .then(() => {
       t.pass( message );
     })
@@ -228,12 +229,12 @@ test( 'Fermeture de modale (click intérieur)', async t => {
   const [ browser, page ] = await createBrowser();
 
   await page.click( '[data-open=".modal2"]' );
-  await page.waitForSelector( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
-  await page.click( '.modal-wrapper .modal.modal2' );
+  await page.waitForSelector( 'body > .modal-wrapper[aria-hidden="false"]', waitForOptions );
+  await page.click( 'body > .modal-wrapper .modal.modal2' );
   await page.waitForTimeout( 50 );
 
   const opened = await page .evaluate(() => {
-    let modal = document.querySelector( '.modal-wrapper' );
+    let modal = document.querySelector( 'body > .modal-wrapper' );
 
     return modal.getAttribute( 'aria-hidden' ) === 'false';
   });
@@ -258,9 +259,9 @@ test( 'Fermeture de modale', async t => {
   });
 
   await page.click( '[data-open=".modal2"]' );
-  await page.waitForSelector( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
+  await page.waitForSelector( 'body > .modal-wrapper[aria-hidden="false"]', waitForOptions );
   await page.keyboard.press( 'Escape' );
-  await page.waitForSelector( '.modal-wrapper[aria-hidden="true"]', waitForOptions );
+  await page.waitForSelector( 'body > .modal-wrapper[aria-hidden="true"]', waitForOptions );
 
   const [ enabled, visible, hidden, focused ] = await page .evaluate(() => {
     const enabled = window.interactiveEls.every( el => {
@@ -305,7 +306,7 @@ test( 'Callbacks', async t => {
   const [ browser, page ] = await createBrowser();
 
   await page.click( '[data-open=".modal1"]' );
-  await page.waitForSelector( '.modal-wrapper[aria-hidden="false"]', waitForOptions );
+  await page.waitForSelector( 'body > .modal-wrapper[aria-hidden="false"]', waitForOptions );
 
   await page.evaluate(() => {
     window.callbacks = {};

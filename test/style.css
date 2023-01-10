@@ -49,7 +49,7 @@ fieldset > *{
 .modal-wrapper{
   background-color: rgba( 0,0,0,0.3 );
   box-sizing: border-box;
-  display: flex;
+  display: none;
   height: 100vh;
   left: 0;
   overflow: auto;
@@ -70,6 +70,10 @@ fieldset > *{
   transition-property: transform, opacity;
   transition-timing-function: cubic-bezier( 0.250,  0.460, 0.450, 0.940 );
   transition-duration: 0.01s;
+}
+
+.modal-wrapper[aria-hidden="false"]{
+  display: flex;
 }
 
 .modal-wrapper[aria-hidden="true"]{
