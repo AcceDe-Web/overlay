@@ -1,6 +1,6 @@
 /**
  * @accede-web/overlay - WAI-ARIA overlay plugin based on AcceDe Web instructions
- * @version v1.0.4
+ * @version v1.1.0
  * @link http://a11y.switch.paris/
  * @license ISC
  **/
@@ -237,6 +237,8 @@
 
       this.options = options;
 
+      this._context = {};
+
       this._init(el);
     }
 
@@ -329,6 +331,8 @@
             }
           }
         }
+
+        document.body.appendChild(el);
 
         return el;
       }
@@ -490,8 +494,8 @@
 
         // remove all event listeners
         this._unbind();
-        this._dispatchEvent('close');
         this.el.setAttribute('aria-hidden', 'true');
+        this._dispatchEvent('close');
 
         if (this.options.modal && layerStack.length === 1) {
           // enable focusable elements
@@ -562,11 +566,6 @@
           this._validateModal();
         }
 
-        // force the layer to be a child of body
-        if (this.el.parentNode !== document.body) {
-          document.body.appendChild(this.el);
-        }
-
         return this;
       }
       /**
@@ -580,9 +579,27 @@
       value: function _initDom(el) {
         this.options.role = el.getAttribute('role');
 
-        if (this.options.modal) {
+        var modalValue = el.getAttribute('aria-modal');
+
+        if (this.options.modal && modalValue !== 'true') {
+          this._context.modalValue = modalValue;
           el.setAttribute('aria-modal', 'true');
         }
+
+        // save the position of the element in the dom
+        // based on its siblings or parent
+        if (el.nextElementSibling) {
+          this._context.ref = el.nextElementSibling;
+          this._context.refPosition = 'next';
+        } else if (el.previousElementSibling) {
+          this._context.ref = el.previousElementSibling;
+          this._context.refPosition = 'previous';
+        } else {
+          this._context.ref = el.parentElement;
+          this._context.refPosition = 'parent';
+        }
+
+        this._context.hidden = el.getAttribute('aria-hidden');
 
         return el;
       }
@@ -592,12 +609,61 @@
         this.el.removeEventListener.apply(this.el, arguments);
       }
       /**
+       * Put back the dom element where it was first
+       */
+
+    }, {
+      key: 'reset',
+      value: function reset() {
+        if (this.mode === 'content' || !this._context.ref) {
+          return;
+        }
+
+        if (this._context.refPosition === 'parent') {
+          this._context.ref.appendChild(this.el);
+        } else {
+          var insertionPoint = this._context.next ? 'beforebegin' : 'afterend';
+
+          this._context.ref.insertAdjacentElement(insertionPoint, this.el);
+        }
+
+        if (!this._context.modalValue) {
+          this.el.removeAttribute('aria-modal');
+        } else if (this._context.modalValue === 'false') {
+          this.el.setAttribute('aria-modal', this._context.modalValue);
+        }
+
+        if (!this._context.hidden) {
+          this.el.removeAttribute('aria-hidden');
+        } else {
+          this.el.setAttribute('aria-hidden', this._context.hidden);
+        }
+      }
+      /**
+       * Ensure the passed dom element is ready to be in the inserted at the root of the body
+       */
+
+    }, {
+      key: '_setDom',
+      value: function _setDom() {
+        if (this.options.modal && this.el.getAttribute('aria-modal') !== 'true') {
+          this.el.setAttribute('aria-modal', 'true');
+        }
+
+        document.body.appendChild(this.el);
+      }
+      /**
        * Show layer behaviour
        */
 
     }, {
       key: 'show',
       value: function show() {
+        // force the layer to be a child of body
+        if (this._context.ref && this.el.parentNode !== document.body) {
+          this._setDom();
+        }
+
         // add the new layer at the top of the stack
         layerStack.unshift(this.el);
 
